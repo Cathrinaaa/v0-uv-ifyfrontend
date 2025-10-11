@@ -26,6 +26,9 @@ export default function Dashboard() {
   }, [])
 
   useEffect(() => {
+    // Only run on client side
+    if (typeof document === "undefined") return
+
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false)
@@ -243,7 +246,7 @@ export default function Dashboard() {
             <div className="flex items-center space-x-3 mb-4 md:mb-0">
               <div className="w-6 h-6 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-lg shadow-md"></div>
               <span className="text-orange-600 dark:text-orange-400 text-sm font-medium">
-                © 2024 {t("common.uvify")}. {t("dashboard.protectingSince")}
+                © 2025 {t("common.uvify")}. {t("dashboard.protectingSince")}
               </span>
             </div>
             <div className="flex space-x-6">
