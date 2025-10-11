@@ -5,16 +5,13 @@ import { useState, useEffect, useRef, useContext } from "react"
 import { AuthContext } from "../main"
 import { useLanguage } from "../contexts/LanguageContext"
 import { useTheme } from "../contexts/ThemeContext"
-import { Globe, Moon, Sun } from "lucide-react"
 
 export default function Dashboard() {
   const location = useLocation()
   const navigate = useNavigate()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [isLangDropdownOpen, setIsLangDropdownOpen] = useState(false) // Declare isLangDropdownOpen
   const [currentTime, setCurrentTime] = useState(new Date())
   const dropdownRef = useRef(null)
-  const langDropdownRef = useRef(null)
 
   const { user, logout } = useContext(AuthContext)
   const { t, language, changeLanguage } = useLanguage()
@@ -33,9 +30,6 @@ export default function Dashboard() {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false)
       }
-      if (langDropdownRef.current && !langDropdownRef.current.contains(event.target)) {
-        setIsLangDropdownOpen(false) // Use setIsLangDropdownOpen
-      }
     }
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
@@ -51,14 +45,6 @@ export default function Dashboard() {
     { name: t("nav.history"), href: "/dashboard/history", icon: "🕒" },
     { name: t("nav.settings"), href: "/dashboard/settings", icon: "⚙️" },
   ]
-
-  const languages = [
-    { code: "en", name: t("settings.english"), flag: "🇺🇸" },
-    { code: "tl", name: t("settings.tagalog"), flag: "🇵🇭" },
-    { code: "ilo", name: t("settings.ilocano"), flag: "🇵🇭" },
-  ]
-
-  const currentLanguage = languages.find((lang) => lang.code === language) || languages[0]
 
   const isActive = (path) => location.pathname === path
 
@@ -112,54 +98,7 @@ export default function Dashboard() {
             </nav>
 
             {/* User Section */}
-            <div className="flex items-center space-x-2">
-              {/* Theme Toggle */}
-              <button
-                onClick={toggleTheme}
-                className="p-2 text-orange-500 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 transition-colors duration-200 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-700"
-                title={isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-              >
-                {isDarkMode ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
-              </button>
-
-              {/* Language Dropdown */}
-              <div className="relative" ref={langDropdownRef}>
-                <button
-                  onClick={() => setIsLangDropdownOpen(!isLangDropdownOpen)}
-                  className="flex items-center space-x-1 p-2 text-orange-500 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 transition-colors duration-200 rounded-lg hover:bg-orange-50 dark:hover:bg-gray-700"
-                >
-                  <Globe className="w-5 h-5" />
-                  <span className="text-sm font-medium hidden md:inline">{currentLanguage.flag}</span>
-                </button>
-
-                {isLangDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-orange-200 dark:border-gray-700 py-2 z-50">
-                    {languages.map((lang) => (
-                      <button
-                        key={lang.code}
-                        onClick={() => {
-                          changeLanguage(lang.code)
-                          setIsLangDropdownOpen(false)
-                        }}
-                        className={`w-full flex items-center px-4 py-2 text-sm transition-colors ${
-                          language === lang.code
-                            ? "bg-orange-50 dark:bg-gray-700 text-orange-700 dark:text-orange-400 font-semibold"
-                            : "text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-gray-700"
-                        }`}
-                      >
-                        <span className="mr-2">{lang.flag}</span>
-                        {lang.name}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              <button className="relative p-2 text-orange-500 dark:text-orange-400 hover:text-orange-700 dark:hover:text-orange-300 transition-colors duration-200">
-                <span className="text-xl">🔔</span>
-                <span className="absolute top-0 right-0 w-3 h-3 bg-red-500 rounded-full border-2 border-white dark:border-gray-800"></span>
-              </button>
-
+            <div className="flex items-center">
               {/* ✅ User Dropdown */}
               <div className="relative" ref={dropdownRef}>
                 <button
@@ -172,7 +111,6 @@ export default function Dashboard() {
                   <span className="text-orange-700 hidden md:block font-medium">
                     {user ? `${user.first_name} ${user.last_name}` : "User"}
                   </span>
-                  {/* <span className="text-orange-500 font-bold">⌄</span> */}
                 </button>
 
                 {isDropdownOpen && (

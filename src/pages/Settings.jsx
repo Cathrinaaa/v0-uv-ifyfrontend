@@ -25,22 +25,17 @@ export default function Settings() {
             <h2 className="text-xl font-semibold text-orange-800 dark:text-orange-400">{t("settings.language")}</h2>
             <p className="text-orange-600 dark:text-orange-500 text-sm">{t("settings.selectLanguage")}</p>
           </div>
-          <div className="flex gap-2">
+          <select
+            value={language}
+            onChange={(e) => changeLanguage(e.target.value)}
+            className="px-4 py-2 rounded-lg font-medium bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border-2 border-orange-300 dark:border-gray-600 focus:border-orange-500 dark:focus:border-orange-400 focus:outline-none transition-colors duration-200 cursor-pointer"
+          >
             {languages.map((lang) => (
-              <button
-                key={lang.code}
-                onClick={() => changeLanguage(lang.code)}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2 ${
-                  language === lang.code
-                    ? "bg-orange-500 text-white hover:bg-orange-600"
-                    : "bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
-                }`}
-              >
-                <span>{lang.flag}</span>
-                <span className="hidden sm:inline">{lang.name}</span>
-              </button>
+              <option key={lang.code} value={lang.code}>
+                {lang.flag} {lang.name}
+              </option>
             ))}
-          </div>
+          </select>
         </div>
 
         {/* 🌗 Theme Section */}
