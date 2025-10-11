@@ -24,6 +24,7 @@ export const translations = {
       adminLogin: "Admin Login",
     },
     nav: {
+      home: "Home",
       latest: "Latest",
       history: "History",
       settings: "Settings",
@@ -31,6 +32,31 @@ export const translations = {
       logout: "Sign Out",
     },
     dashboard: {
+      welcome: "Welcome to UVify",
+      monitorUVLevels: "Monitor UV levels and protect your skin",
+      connected: "Connected",
+      waitingForDevice: "Waiting for Device",
+      deviceNotConnected: "UV Device Not Connected",
+      connectDeviceMessage: "Please ensure your UV monitoring device is powered on and connected to the network.",
+      todaysPeak: "Today's Peak",
+      currentReading: "Current Reading",
+      avgThisWeek: "Avg This Week",
+      totalReadings: "Total Readings",
+      readings: "readings",
+      quickActions: "Quick Actions",
+      viewLatestReadings: "View real-time UV measurements",
+      viewHistoricalData: "Browse past UV index records",
+      configureSettings: "Adjust preferences and alerts",
+      goTo: "Go to",
+      uvSafetyTips: "UV Safety Tips",
+      useSunscreen: "Use Sunscreen",
+      sunscreenTip: "Apply SPF 30+ sunscreen 15 minutes before going outside",
+      wearProtection: "Wear Protection",
+      protectionTip: "Use sunglasses, hats, and protective clothing",
+      avoidPeakHours: "Avoid Peak Hours",
+      peakHoursTip: "Stay indoors between 10 AM and 4 PM when UV is strongest",
+      seekShade: "Seek Shade",
+      shadeTip: "Find shade whenever possible, especially during midday",
       realTimeActive: "Real-time Active",
       currentLocation: "Current Location",
       protectingSince: "Protecting your skin since day one.",
@@ -150,7 +176,8 @@ export const translations = {
       dontHaveAccount: "Don't have an account?",
       signUp: "Sign Up",
       welcomeTo: "Welcome to UVify",
-      intelligentSystem: "Your intelligent UV index monitoring system. Stay protected with real-time UV tracking and personalized safety recommendations.",
+      intelligentSystem:
+        "Your intelligent UV index monitoring system. Stay protected with real-time UV tracking and personalized safety recommendations.",
       realTimeMonitoring: "Real-time Monitoring",
       realTimeDesc: "Live UV index readings from ESP32 sensors with instant updates.",
       safetyAlerts: "Safety Alerts",
@@ -186,11 +213,13 @@ export const translations = {
     landing: {
       title: "UVify",
       subtitle: "Real-time na Pagsubaybay sa UV",
-      description: "Subaybayan ang antas ng UV radiation nang real-time at protektahan ang iyong sarili sa nakakapinsalang sikat ng araw",
+      description:
+        "Subaybayan ang antas ng UV radiation nang real-time at protektahan ang iyong sarili sa nakakapinsalang sikat ng araw",
       enterDashboard: "Pumasok sa Dashboard",
       adminLogin: "Admin Login",
     },
     nav: {
+      home: "Home",
       latest: "Pinakabago",
       history: "Kasaysayan",
       settings: "Mga Setting",
@@ -198,6 +227,31 @@ export const translations = {
       logout: "Mag-logout",
     },
     dashboard: {
+      welcome: "Maligayang pagdating sa UVify",
+      monitorUVLevels: "Subaybayan ang UV levels at protektahan ang iyong balat",
+      connected: "Nakakonekta",
+      waitingForDevice: "Naghihintay ng Device",
+      deviceNotConnected: "Hindi Nakakonekta ang UV Device",
+      connectDeviceMessage: "Pakisiguraduhin na nakabukas at nakakonekta sa network ang iyong UV monitoring device.",
+      todaysPeak: "Pinakamataas Ngayong Araw",
+      currentReading: "Kasalukuyang Pagbasa",
+      avgThisWeek: "Average Ngayong Linggo",
+      totalReadings: "Kabuuang Pagbasa",
+      readings: "mga pagbasa",
+      quickActions: "Mabilis na Aksyon",
+      viewLatestReadings: "Tingnan ang real-time UV measurements",
+      viewHistoricalData: "Tingnan ang nakaraang UV index records",
+      configureSettings: "Ayusin ang preferences at alerts",
+      goTo: "Pumunta sa",
+      uvSafetyTips: "Mga Tip sa Kaligtasan sa UV",
+      useSunscreen: "Gumamit ng Sunscreen",
+      sunscreenTip: "Maglagay ng SPF 30+ sunscreen 15 minuto bago lumabas",
+      wearProtection: "Magsuot ng Proteksyon",
+      protectionTip: "Gumamit ng sunglasses, sumbrero, at protective clothing",
+      avoidPeakHours: "Iwasan ang Peak Hours",
+      peakHoursTip: "Manatili sa loob mula 10 AM hanggang 4 PM kung kailan pinakamalakas ang UV",
+      seekShade: "Maghanap ng Lilim",
+      shadeTip: "Maghanap ng lilim kung maaari, lalo na sa tanghali",
       realTimeActive: "Real-time na Aktibo",
       currentLocation: "Kasalukuyang Lokasyon",
       protectingSince: "Pinoprotektahan ang iyong balat simula noon.",
@@ -317,13 +371,15 @@ export const translations = {
       dontHaveAccount: "Walang account?",
       signUp: "Mag-sign Up",
       welcomeTo: "Maligayang pagdating sa UVify",
-      intelligentSystem: "Ang iyong matalinong UV index monitoring system. Manatiling protektado sa real-time UV tracking at personalized na mga safety recommendation.",
+      intelligentSystem:
+        "Ang iyong matalinong UV index monitoring system. Manatiling protektado sa real-time UV tracking at personalized na mga safety recommendation.",
       realTimeMonitoring: "Real-time na Pagsubaybay",
       realTimeDesc: "Live UV index readings mula sa ESP32 sensors na may instant updates.",
       safetyAlerts: "Mga Babala sa Kaligtasan",
       safetyAlertsDesc: "Personalized na mga rekomendasyon at babala batay sa kasalukuyang UV levels.",
       historicalData: "Historical Data",
-      historicalDataDesc: "Subaybayan ang UV patterns sa paglipas ng panahon gamit ang detalyadong charts at analytics.",
+      historicalDataDesc:
+        "Subaybayan ang UV patterns sa paglipas ng panahon gamit ang detalyadong charts at analytics.",
       multiUserSupport: "Multi-user Support",
       multiUserDesc: "Indibidwal na mga profile na may personalized na settings at preferences.",
       signUpTitle: "Gumawa ng Account",
@@ -353,11 +409,13 @@ export const translations = {
     landing: {
       title: "UVify",
       subtitle: "Real-time a Panagsurot iti UV",
-      description: "Surotan ti lebel ti UV radiation iti real-time ken salakniban ti bagim manipud iti makadangran nga init ti aldaw",
+      description:
+        "Surotan ti lebel ti UV radiation iti real-time ken salakniban ti bagim manipud iti makadangran nga init ti aldaw",
       enterDashboard: "Sumrek iti Dashboard",
       adminLogin: "Admin Login",
     },
     nav: {
+      home: "Home",
       latest: "Kaud-udi",
       history: "Pakasaritaan",
       settings: "Dagiti Setting",
@@ -365,6 +423,31 @@ export const translations = {
       logout: "Rummuar",
     },
     dashboard: {
+      welcome: "Naragsak nga isasangbay iti UVify",
+      monitorUVLevels: "Surotan dagiti UV levels ken salakniban ti kudilmo",
+      connected: "Nakaikonektar",
+      waitingForDevice: "Aguray iti Device",
+      deviceNotConnected: "Saan a Nakaikonektar ti UV Device",
+      connectDeviceMessage: "Siguraduen nga nakabukas ken nakaikonektar iti network ti UV monitoring device.",
+      todaysPeak: "Kangatuan Ita nga Aldaw",
+      currentReading: "Agdama a Panagbasa",
+      avgThisWeek: "Average Ita a Lawas",
+      totalReadings: "Dagup a Panagbasa",
+      readings: "dagiti panagbasa",
+      quickActions: "Napartak nga Aksion",
+      viewLatestReadings: "Kitaen dagiti real-time UV measurements",
+      viewHistoricalData: "Kitaen dagiti napalabas nga UV index records",
+      configureSettings: "Urnosen dagiti preferences ken alerts",
+      goTo: "Mapan iti",
+      uvSafetyTips: "Dagiti Tip iti Kinatalged iti UV",
+      useSunscreen: "Agusar ti Sunscreen",
+      sunscreenTip: "Ikabil ti SPF 30+ sunscreen 15 minuto sakbay a rumuar",
+      wearProtection: "Agsuot ti Panagsalaknib",
+      protectionTip: "Agusar ti sunglasses, sombrero, ken protective clothing",
+      avoidPeakHours: "Liklikam dagiti Peak Hours",
+      peakHoursTip: "Agtalinaed iti uneg manipud 10 AM agingga 4 PM no napigpigsa ti UV",
+      seekShade: "Agsapul ti Linong",
+      shadeTip: "Agsapul ti linong no mabalin, nangruna iti tengnga ti aldaw",
       realTimeActive: "Real-time nga Aktibo",
       currentLocation: "Agdama a Lokasion",
       protectingSince: "Salsalakniban ti kudilmo manipud idi.",
@@ -484,13 +567,15 @@ export const translations = {
       dontHaveAccount: "Awan ti account?",
       signUp: "Agparehistro",
       welcomeTo: "Naragsak nga isasangbay iti UVify",
-      intelligentSystem: "Ti nalaing nga UV index monitoring system. Agtalinaed a nasalakniban babaen ti real-time UV tracking ken personalized a dagiti safety recommendation.",
+      intelligentSystem:
+        "Ti nalaing nga UV index monitoring system. Agtalinaed a nasalakniban babaen ti real-time UV tracking ken personalized a dagiti safety recommendation.",
       realTimeMonitoring: "Real-time a Panagsurot",
       realTimeDesc: "Live UV index readings manipud kadagiti ESP32 sensors nga addaan ti instant updates.",
       safetyAlerts: "Dagiti Ballaag iti Kinatalged",
       safetyAlertsDesc: "Personalized a dagiti rekomendasion ken ballaag a naibatay iti agdama nga UV levels.",
       historicalData: "Historical Data",
-      historicalDataDesc: "Surotan dagiti UV patterns iti panaglabas ti panawen babaen ti detalyado a charts ken analytics.",
+      historicalDataDesc:
+        "Surotan dagiti UV patterns iti panaglabas ti panawen babaen ti detalyado a charts ken analytics.",
       multiUserSupport: "Multi-user Support",
       multiUserDesc: "Indibidual a dagiti profile nga addaan ti personalized a settings ken preferences.",
       signUpTitle: "Mangaramid ti Account",
@@ -500,18 +585,18 @@ export const translations = {
       signIn: "Sumrek",
     },
   },
-};
+}
 
 export const getTranslation = (lang, key) => {
-  const keys = key.split('.');
-  let value = translations[lang];
-  
+  const keys = key.split(".")
+  let value = translations[lang]
+
   for (const k of keys) {
-    value = value?.[k];
+    value = value?.[k]
     if (value === undefined) {
-      return key;
+      return key
     }
   }
-  
-  return value || key;
-};
+
+  return value || key
+}

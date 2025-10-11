@@ -41,12 +41,18 @@ export default function Dashboard() {
   }
 
   const navigation = [
+    { name: t("nav.home"), href: "/dashboard", icon: "🏠" },
     { name: t("nav.latest"), href: "/dashboard/latest", icon: "📊" },
     { name: t("nav.history"), href: "/dashboard/history", icon: "🕒" },
     { name: t("nav.settings"), href: "/dashboard/settings", icon: "⚙️" },
   ]
 
-  const isActive = (path) => location.pathname === path
+  const isActive = (path) => {
+    if (path === "/dashboard") {
+      return location.pathname === "/dashboard" || location.pathname === "/dashboard/"
+    }
+    return location.pathname === path
+  }
 
   const getUserInitials = () => {
     if (user?.first_name && user?.last_name) {
