@@ -1,111 +1,147 @@
+"use client"
+
 // src/pages/Latest.jsx
-import { useEffect, useState } from "react";
-import UVGauge from "../components/UVGauge";
-import UVAnalyticsChart from "../components/UVAnalyticsChart";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useEffect, useState } from "react"
+import UVGauge from "../components/UVGauge"
+import UVAnalyticsChart from "../components/UVAnalyticsChart"
+import { useLanguage } from "../contexts/LanguageContext"
 
 export default function Latest() {
-  const { t } = useLanguage();
-  const [latest, setLatest] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [lastUpdated, setLastUpdated] = useState(new Date());
-  const [isConnected, setIsConnected] = useState(true);
+  const { t } = useLanguage()
+  const [latest, setLatest] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const [lastUpdated, setLastUpdated] = useState(new Date())
+  const [isConnected, setIsConnected] = useState(true)
 
   // 🌞 Added: States for popup and alert sound
-  const [showReminder, setShowReminder] = useState(false);
-  const [hasPlayedAlert, setHasPlayedAlert] = useState(false);
+  const [showReminder, setShowReminder] = useState(false)
+  const [hasPlayedAlert, setHasPlayedAlert] = useState(false)
 
   const fetchLatestData = async () => {
     try {
-      setError(null);
-      const response = await fetch("https://uvify-backend.onrender.com/latest");
+      setError(null)
+      const response = await fetch("https://uvify-backend.onrender.com/latest")
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
-      const data = await response.json();
-      
+      const data = await response.json()
+
       if (data.message === "No data yet") {
-        setLatest(null);
-        setIsConnected(false);
+        setLatest(null)
+        setIsConnected(false)
       } else {
-        setLatest(data);
-        setIsConnected(true);
+        setLatest(data)
+        setIsConnected(true)
       }
-      setLastUpdated(new Date());
+      setLastUpdated(new Date())
     } catch (err) {
-      console.error("Error fetching latest data:", err);
-      setError(t('latest.errorFetching'));
-      setIsConnected(false);
+      console.error("Error fetching latest data:", err)
+      setError(t("latest.errorFetching"))
+      setIsConnected(false)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   useEffect(() => {
-    fetchLatestData();
-    const interval = setInterval(fetchLatestData, 5000);
-    return () => clearInterval(interval);
-  }, []);
+    fetchLatestData()
+    const interval = setInterval(fetchLatestData, 5000)
+    return () => clearInterval(interval)
+  }, [])
 
   // Safe UV value parsing
   const getSafeUVValue = () => {
-    if (!latest || !latest.uvi) return 0;
-    const uvValue = parseFloat(latest.uvi);
-    return isNaN(uvValue) ? 0 : Math.max(0, uvValue);
-  };
+    if (!latest || !latest.uvi) return 0
+    const uvValue = Number.parseFloat(latest.uvi)
+    return isNaN(uvValue) ? 0 : Math.max(0, uvValue)
+  }
 
   // Get UV level description
   const getUVLevel = (uvi) => {
-    if (uvi <= 2) return { level: t('latest.low'), color: "green", bgColor: "bg-green-50 dark:bg-green-900/20", textColor: "text-green-600 dark:text-green-400", borderColor: "border-green-600 dark:border-green-500" };
-    if (uvi <= 5) return { level: t('latest.moderate'), color: "yellow", bgColor: "bg-yellow-50 dark:bg-yellow-900/20", textColor: "text-yellow-600 dark:text-yellow-400", borderColor: "border-yellow-600 dark:border-yellow-500" };
-    if (uvi <= 7) return { level: t('latest.high'), color: "orange", bgColor: "bg-orange-50 dark:bg-orange-900/20", textColor: "text-orange-600 dark:text-orange-400", borderColor: "border-orange-600 dark:border-orange-500" };
-    if (uvi <= 10) return { level: t('latest.veryHigh'), color: "red", bgColor: "bg-red-50 dark:bg-red-900/20", textColor: "text-red-600 dark:text-red-400", borderColor: "border-red-600 dark:border-red-500" };
-    return { level: t('latest.extreme'), color: "purple", bgColor: "bg-purple-50 dark:bg-purple-900/20", textColor: "text-purple-600 dark:text-purple-400", borderColor: "border-purple-600 dark:border-purple-500" };
-  };
+    if (uvi <= 2)
+      return {
+        level: t("latest.low"),
+        color: "green",
+        bgColor: "bg-green-50 dark:bg-green-900/20",
+        textColor: "text-green-600 dark:text-green-400",
+        borderColor: "border-green-600 dark:border-green-500",
+      }
+    if (uvi <= 5)
+      return {
+        level: t("latest.moderate"),
+        color: "yellow",
+        bgColor: "bg-yellow-50 dark:bg-yellow-900/20",
+        textColor: "text-yellow-600 dark:text-yellow-400",
+        borderColor: "border-yellow-600 dark:border-yellow-500",
+      }
+    if (uvi <= 7)
+      return {
+        level: t("latest.high"),
+        color: "orange",
+        bgColor: "bg-orange-50 dark:bg-orange-900/20",
+        textColor: "text-orange-600 dark:text-orange-400",
+        borderColor: "border-orange-600 dark:border-orange-500",
+      }
+    if (uvi <= 10)
+      return {
+        level: t("latest.veryHigh"),
+        color: "red",
+        bgColor: "bg-red-50 dark:bg-red-900/20",
+        textColor: "text-red-600 dark:text-red-400",
+        borderColor: "border-red-600 dark:border-red-500",
+      }
+    return {
+      level: t("latest.extreme"),
+      color: "purple",
+      bgColor: "bg-purple-50 dark:bg-purple-900/20",
+      textColor: "text-purple-600 dark:text-purple-400",
+      borderColor: "border-purple-600 dark:border-purple-500",
+    }
+  }
 
-  const uvValue = getSafeUVValue();
-  const uvLevelInfo = getUVLevel(uvValue);
+  const uvValue = getSafeUVValue()
+  const uvLevelInfo = getUVLevel(uvValue)
 
   // 🌞 Added: Trigger popup and sound when UV index is high or above
   useEffect(() => {
-    if (latest && parseFloat(latest.uvi) >= 6) {
-      setShowReminder(true);
+    if (latest && Number.parseFloat(latest.uvi) >= 6) {
+      setShowReminder(true)
       if (!hasPlayedAlert) {
-        const alertSound = new Audio("/alert.mp3");
-        alertSound.play().catch((err) => console.warn("Audio play blocked:", err));
-        setHasPlayedAlert(true);
+        const alertSound = new Audio("/alert.mp3")
+        alertSound.play().catch((err) => console.warn("Audio play blocked:", err))
+        setHasPlayedAlert(true)
       }
     } else {
-      setShowReminder(false);
-      setHasPlayedAlert(false);
+      setShowReminder(false)
+      setHasPlayedAlert(false)
     }
-  }, [latest]);
+  }, [latest])
 
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
-        <p className="mt-4 text-gray-600 dark:text-gray-400">{t('latest.loadingUVData')}</p>
+        <p className="mt-4 text-gray-600 dark:text-gray-400">{t("latest.loadingUVData")}</p>
       </div>
-    );
+    )
   }
 
   if (error && !latest) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px]">
         <div className="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg max-w-md">
-          <strong className="font-bold">{t('common.error')}: </strong>
+          <strong className="font-bold">{t("common.error")}: </strong>
           <span className="block sm:inline">{error}</span>
         </div>
         <button
           onClick={fetchLatestData}
           className="mt-4 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors"
         >
-          {t('common.retry')}
+          {t("common.retry")}
         </button>
       </div>
-    );
+    )
   }
 
   if (!latest) {
@@ -113,80 +149,82 @@ export default function Latest() {
       <div className="flex flex-col items-center justify-center min-h-[400px]">
         <div className="bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-400 dark:border-yellow-600 text-yellow-700 dark:text-yellow-400 px-4 py-3 rounded-lg max-w-md text-center">
           <span className="text-2xl">🌞</span>
-          <p className="mt-2 font-medium">{t('latest.noDataYet')}</p>
-          <p className="text-sm mt-1">{t('latest.waitingForSensor')}</p>
+          <p className="mt-2 font-medium">{t("latest.noDataYet")}</p>
+          <p className="text-sm mt-1">{t("latest.waitingForSensor")}</p>
         </div>
       </div>
-    );
+    )
   }
 
   return (
     <div className="flex flex-col items-center justify-center p-6">
-      <h1 className="text-3xl font-bold mb-2 text-orange-800 dark:text-orange-400">🌞 {t('latest.title')}</h1>
-      <p className="text-gray-600 dark:text-gray-400 mb-4">{t('latest.subtitle')}</p>
-      
+      <h1 className="text-3xl font-bold mb-2 text-orange-800 dark:text-orange-400">🌞 {t("latest.title")}</h1>
+      <p className="text-gray-600 dark:text-gray-400 mb-4">{t("latest.subtitle")}</p>
+
       {/* Connectivity Status Banner */}
       {!isConnected && latest && (
         <div className="bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-400 dark:border-yellow-600 text-yellow-700 dark:text-yellow-400 px-4 py-2 rounded-lg mb-6 max-w-md w-full text-center">
-          ⚠️ {t('latest.espDisconnected')}
+          ⚠️ {t("latest.espDisconnected")}
         </div>
       )}
-      
+
       {isConnected && latest && (
         <div className="bg-green-100 dark:bg-green-900/20 border border-green-400 dark:border-green-600 text-green-700 dark:text-green-400 px-4 py-2 rounded-lg mb-6 max-w-md w-full text-center">
-          ✅ {t('latest.espConnected')}
+          ✅ {t("latest.espConnected")}
         </div>
       )}
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center max-w-4xl w-full">
         {/* UV Gauge */}
         <div className="flex justify-center">
-          <div className="bg-white rounded-2xl p-6 shadow-lg border border-orange-200">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-orange-200 dark:border-gray-700 transition-colors duration-300">
             <UVGauge value={uvValue} size={220} />
           </div>
         </div>
 
         {/* Latest Data Details */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-orange-200 dark:border-gray-700">
-          <h2 className="text-xl font-semibold mb-4 text-orange-700 dark:text-orange-400">📊 {t('latest.readingDetails')}</h2>
-          
+          <h2 className="text-xl font-semibold mb-4 text-orange-700 dark:text-orange-400">
+            📊 {t("latest.readingDetails")}
+          </h2>
+
           <div className="space-y-4">
             <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-              <span className="font-medium text-gray-700 dark:text-gray-300">📅 {t('latest.date')}:</span>
+              <span className="font-medium text-gray-700 dark:text-gray-300">📅 {t("latest.date")}:</span>
               <span className="font-semibold dark:text-gray-200">{latest.date || "N/A"}</span>
             </div>
-            
+
             <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-              <span className="font-medium text-gray-700 dark:text-gray-300">⏰ {t('latest.time')}:</span>
+              <span className="font-medium text-gray-700 dark:text-gray-300">⏰ {t("latest.time")}:</span>
               <span className="font-semibold dark:text-gray-200">{latest.time || "N/A"}</span>
             </div>
-            
+
             <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-              <span className="font-medium text-gray-700 dark:text-gray-300">📈 {t('latest.uvIndex')}:</span>
+              <span className="font-medium text-gray-700 dark:text-gray-300">📈 {t("latest.uvIndex")}:</span>
               <span className="font-semibold text-lg dark:text-gray-200">{latest.uvi}</span>
             </div>
-            
+
             <div className={`flex items-center justify-between p-3 rounded-lg ${uvLevelInfo.bgColor}`}>
-              <span className="font-medium text-gray-700 dark:text-gray-300">⚠️ {t('latest.level')}:</span>
-              <span className={`font-semibold ${uvLevelInfo.textColor}`}>
-                {uvLevelInfo.level}
-              </span>
+              <span className="font-medium text-gray-700 dark:text-gray-300">⚠️ {t("latest.level")}:</span>
+              <span className={`font-semibold ${uvLevelInfo.textColor}`}>{uvLevelInfo.level}</span>
             </div>
           </div>
 
           {/* Last Updated */}
           <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
             <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
-              {t('latest.lastUpdated')}: {lastUpdated.toLocaleTimeString()}
+              {t("latest.lastUpdated")}: {lastUpdated.toLocaleTimeString()}
             </p>
             <div className="flex items-center justify-center mt-2">
-              <div className={`w-2 h-2 rounded-full animate-pulse mr-2 ${
-                isConnected ? "bg-green-500" : "bg-yellow-500"
-              }`}></div>
-              <span className={`text-xs font-medium ${
-                isConnected ? "text-green-600 dark:text-green-400" : "text-yellow-600 dark:text-yellow-400"
-              }`}>
-                {isConnected ? t('latest.liveUpdating') : t('latest.showingCachedData')}
+              <div
+                className={`w-2 h-2 rounded-full animate-pulse mr-2 ${isConnected ? "bg-green-500" : "bg-yellow-500"}`}
+              ></div>
+              <span
+                className={`text-xs font-medium ${
+                  isConnected ? "text-green-600 dark:text-green-400" : "text-yellow-600 dark:text-yellow-400"
+                }`}
+              >
+                {isConnected ? t("latest.liveUpdating") : t("latest.showingCachedData")}
               </span>
             </div>
           </div>
@@ -195,70 +233,76 @@ export default function Latest() {
 
       {/* UV Index Scale Reference */}
       <div className="mt-8 bg-gradient-to-r from-green-50 via-yellow-50 to-red-50 dark:from-gray-800 dark:via-gray-800 dark:to-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 max-w-4xl w-full">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">📏 {t('latest.uvIndexScale')}</h3>
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">📏 {t("latest.uvIndexScale")}</h3>
         <div className="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
           <div className="text-center p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
             <div className="font-bold text-green-700 dark:text-green-400">0-2</div>
-            <div className="text-green-600 dark:text-green-500">{t('latest.low')}</div>
+            <div className="text-green-600 dark:text-green-500">{t("latest.low")}</div>
           </div>
           <div className="text-center p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
             <div className="font-bold text-yellow-700 dark:text-yellow-400">3-5</div>
-            <div className="text-yellow-600 dark:text-yellow-500">{t('latest.moderate')}</div>
+            <div className="text-yellow-600 dark:text-yellow-500">{t("latest.moderate")}</div>
           </div>
           <div className="text-center p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
             <div className="font-bold text-orange-700 dark:text-orange-400">6-7</div>
-            <div className="text-orange-600 dark:text-orange-500">{t('latest.high')}</div>
+            <div className="text-orange-600 dark:text-orange-500">{t("latest.high")}</div>
           </div>
           <div className="text-center p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
             <div className="font-bold text-red-700 dark:text-red-400">8-10</div>
-            <div className="text-red-600 dark:text-red-500">{t('latest.veryHigh')}</div>
+            <div className="text-red-600 dark:text-red-500">{t("latest.veryHigh")}</div>
           </div>
           <div className="text-center p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
             <div className="font-bold text-purple-700 dark:text-purple-400">11+</div>
-            <div className="text-purple-600 dark:text-purple-500">{t('latest.extreme')}</div>
+            <div className="text-purple-600 dark:text-purple-500">{t("latest.extreme")}</div>
           </div>
         </div>
       </div>
 
       {/* Safety Information */}
       <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-2xl p-6 max-w-4xl w-full">
-        <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-400 mb-3">🛡️ {t('latest.uvProtectionGuide')}</h3>
+        <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-400 mb-3">
+          🛡️ {t("latest.uvProtectionGuide")}
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-700 dark:text-blue-300">
           <div className="flex items-start">
             <span className="text-lg mr-2">☀️</span>
-            <span>{t('latest.wearSunscreen')}</span>
+            <span>{t("latest.wearSunscreen")}</span>
           </div>
           <div className="flex items-start">
             <span className="text-lg mr-2">👒</span>
-            <span>{t('latest.wearHat')}</span>
+            <span>{t("latest.wearHat")}</span>
           </div>
           <div className="flex items-start">
             <span className="text-lg mr-2">🕶️</span>
-            <span>{t('latest.wearSunglasses')}</span>
+            <span>{t("latest.wearSunglasses")}</span>
           </div>
           <div className="flex items-start">
             <span className="text-lg mr-2">⏰</span>
-            <span>{t('latest.avoidPeakHours')}</span>
+            <span>{t("latest.avoidPeakHours")}</span>
           </div>
           <div className="flex items-start">
             <span className="text-lg mr-2">🌳</span>
-            <span>{t('latest.seekShade')}</span>
+            <span>{t("latest.seekShade")}</span>
           </div>
           <div className="flex items-start">
             <span className="text-lg mr-2">👕</span>
-            <span>{t('latest.wearProtectiveClothing')}</span>
+            <span>{t("latest.wearProtectiveClothing")}</span>
           </div>
         </div>
-        
+
         {/* Current UV Level Specific Advice */}
         <div className={`mt-4 p-3 rounded-lg ${uvLevelInfo.bgColor} border-l-4 ${uvLevelInfo.borderColor}`}>
-          <h4 className="font-semibold mb-1 dark:text-gray-200">{t('latest.currentRecommendation')}</h4>
+          <h4 className="font-semibold mb-1 dark:text-gray-200">{t("latest.currentRecommendation")}</h4>
           <p className="text-sm dark:text-gray-300">
-            {uvValue <= 2 ? t('latest.lowAdvice') :
-             uvValue <= 5 ? t('latest.moderateAdvice') :
-             uvValue <= 7 ? t('latest.highAdvice') :
-             uvValue <= 10 ? t('latest.veryHighAdvice') :
-             t('latest.extremeAdvice')}
+            {uvValue <= 2
+              ? t("latest.lowAdvice")
+              : uvValue <= 5
+                ? t("latest.moderateAdvice")
+                : uvValue <= 7
+                  ? t("latest.highAdvice")
+                  : uvValue <= 10
+                    ? t("latest.veryHighAdvice")
+                    : t("latest.extremeAdvice")}
           </p>
         </div>
       </div>
@@ -270,7 +314,7 @@ export default function Latest() {
           className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg transition-colors flex items-center"
         >
           <span className="mr-2">🔄</span>
-          {t('common.refresh')}
+          {t("common.refresh")}
         </button>
       </div>
 
@@ -284,21 +328,22 @@ export default function Latest() {
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 animate-fade-in">
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-2xl border border-orange-300 dark:border-orange-600 text-center max-w-sm w-full transform transition-all scale-100 hover:scale-105">
             <h3 className="text-xl font-bold text-orange-700 dark:text-orange-400 mb-2 animate-bounce">
-              ⚠️ {t('latest.highUVAlert')}
+              ⚠️ {t("latest.highUVAlert")}
             </h3>
             <p className="text-gray-700 dark:text-gray-300 mb-4">
-              {t('latest.uvIndexCurrently')} <strong>{latest.uvi}</strong> — {uvLevelInfo.level}.
-              <br />{t('latest.protectYourself')}
+              {t("latest.uvIndexCurrently")} <strong>{latest.uvi}</strong> — {uvLevelInfo.level}.
+              <br />
+              {t("latest.protectYourself")}
             </p>
             <button
               onClick={() => setShowReminder(false)}
               className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition"
             >
-              {t('latest.gotIt')}
+              {t("latest.gotIt")}
             </button>
           </div>
         </div>
       )}
     </div>
-  );
+  )
 }
