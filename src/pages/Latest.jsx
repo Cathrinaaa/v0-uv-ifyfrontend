@@ -146,11 +146,147 @@ export default function Latest() {
 
   if (!latest) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[400px]">
-        <div className="bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-400 dark:border-yellow-600 text-yellow-700 dark:text-yellow-400 px-4 py-3 rounded-lg max-w-md text-center">
-          <span className="text-2xl">🌞</span>
-          <p className="mt-2 font-medium">{t("latest.noDataYet")}</p>
-          <p className="text-sm mt-1">{t("latest.waitingForSensor")}</p>
+      <div className="flex flex-col items-center justify-center p-6">
+        <h1 className="text-3xl font-bold mb-2 text-orange-800 dark:text-orange-400">🌞 {t("latest.title")}</h1>
+        <p className="text-gray-600 dark:text-gray-400 mb-4">{t("latest.subtitle")}</p>
+
+        {/* Connectivity Status Banner */}
+        <div className="bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-400 dark:border-yellow-600 text-yellow-700 dark:text-yellow-400 px-4 py-3 rounded-lg mb-6 max-w-md w-full text-center">
+          <div className="flex items-center justify-center mb-2">
+            <div className="w-3 h-3 rounded-full bg-yellow-500 animate-pulse mr-2"></div>
+            <span className="font-semibold">⚠️ {t("latest.uviNotConnected") || "UVI Device Not Connected"}</span>
+          </div>
+          <p className="text-sm">{t("latest.waitingForReadings") || "Waiting for readings..."}</p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center max-w-4xl w-full">
+          {/* UV Gauge - showing 0 */}
+          <div className="flex justify-center">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-orange-200 dark:border-gray-700 transition-colors duration-300 opacity-50">
+              <UVGauge value={0} size={220} />
+              <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
+                {t("latest.noDataAvailable") || "No data available"}
+              </p>
+            </div>
+          </div>
+
+          {/* Latest Data Details - placeholder */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-orange-200 dark:border-gray-700 opacity-50">
+            <h2 className="text-xl font-semibold mb-4 text-orange-700 dark:text-orange-400">
+              📊 {t("latest.readingDetails")}
+            </h2>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                <span className="font-medium text-gray-700 dark:text-gray-300">📅 {t("latest.date")}:</span>
+                <span className="font-semibold text-gray-400 dark:text-gray-500">--/--/----</span>
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                <span className="font-medium text-gray-700 dark:text-gray-300">⏰ {t("latest.time")}:</span>
+                <span className="font-semibold text-gray-400 dark:text-gray-500">--:--:--</span>
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                <span className="font-medium text-gray-700 dark:text-gray-300">📈 {t("latest.uvIndex")}:</span>
+                <span className="font-semibold text-lg text-gray-400 dark:text-gray-500">--</span>
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                <span className="font-medium text-gray-700 dark:text-gray-300">⚠️ {t("latest.level")}:</span>
+                <span className="font-semibold text-gray-400 dark:text-gray-500">--</span>
+              </div>
+            </div>
+
+            {/* Last Updated */}
+            <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+              <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
+                {t("latest.waitingForFirstReading") || "Waiting for first reading..."}
+              </p>
+              <div className="flex items-center justify-center mt-2">
+                <div className="w-2 h-2 rounded-full animate-pulse mr-2 bg-yellow-500"></div>
+                <span className="text-xs font-medium text-yellow-600 dark:text-yellow-400">
+                  {t("latest.deviceDisconnected") || "Device disconnected"}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* UV Index Scale Reference */}
+        <div className="mt-8 bg-gradient-to-r from-green-50 via-yellow-50 to-red-50 dark:from-gray-800 dark:via-gray-800 dark:to-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 max-w-4xl w-full">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">📏 {t("latest.uvIndexScale")}</h3>
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
+            <div className="text-center p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
+              <div className="font-bold text-green-700 dark:text-green-400">0-2</div>
+              <div className="text-green-600 dark:text-green-500">{t("latest.low")}</div>
+            </div>
+            <div className="text-center p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
+              <div className="font-bold text-yellow-700 dark:text-yellow-400">3-5</div>
+              <div className="text-yellow-600 dark:text-yellow-500">{t("latest.moderate")}</div>
+            </div>
+            <div className="text-center p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
+              <div className="font-bold text-orange-700 dark:text-orange-400">6-7</div>
+              <div className="text-orange-600 dark:text-orange-500">{t("latest.high")}</div>
+            </div>
+            <div className="text-center p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
+              <div className="font-bold text-red-700 dark:text-red-400">8-10</div>
+              <div className="text-red-600 dark:text-red-500">{t("latest.veryHigh")}</div>
+            </div>
+            <div className="text-center p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+              <div className="font-bold text-purple-700 dark:text-purple-400">11+</div>
+              <div className="text-purple-600 dark:text-purple-500">{t("latest.extreme")}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* Safety Information */}
+        <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-2xl p-6 max-w-4xl w-full">
+          <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-400 mb-3">
+            🛡️ {t("latest.uvProtectionGuide")}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-700 dark:text-blue-300">
+            <div className="flex items-start">
+              <span className="text-lg mr-2">☀️</span>
+              <span>{t("latest.wearSunscreen")}</span>
+            </div>
+            <div className="flex items-start">
+              <span className="text-lg mr-2">👒</span>
+              <span>{t("latest.wearHat")}</span>
+            </div>
+            <div className="flex items-start">
+              <span className="text-lg mr-2">🕶️</span>
+              <span>{t("latest.wearSunglasses")}</span>
+            </div>
+            <div className="flex items-start">
+              <span className="text-lg mr-2">⏰</span>
+              <span>{t("latest.avoidPeakHours")}</span>
+            </div>
+            <div className="flex items-start">
+              <span className="text-lg mr-2">🌳</span>
+              <span>{t("latest.seekShade")}</span>
+            </div>
+            <div className="flex items-start">
+              <span className="text-lg mr-2">👕</span>
+              <span>{t("latest.wearProtectiveClothing")}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Refresh Button */}
+        <div className="mt-6">
+          <button
+            onClick={fetchLatestData}
+            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg transition-colors flex items-center"
+          >
+            <span className="mr-2">🔄</span>
+            {t("common.refresh")}
+          </button>
+        </div>
+
+        {/* UV Analytics Chart */}
+        <div className="mt-8 w-full max-w-4xl opacity-50">
+          <UVAnalyticsChart />
         </div>
       </div>
     )

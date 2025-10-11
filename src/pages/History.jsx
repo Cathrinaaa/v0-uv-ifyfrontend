@@ -1,113 +1,113 @@
+"use client"
+
 // pages/History.jsx
-import { useEffect, useState } from "react";
-import { useLanguage } from "../contexts/LanguageContext";
+import { useEffect, useState } from "react"
+import { useLanguage } from "../contexts/LanguageContext"
 
 export default function History() {
-  const { t } = useLanguage();
-  const [history, setHistory] = useState([]);
-  const [filteredHistory, setFilteredHistory] = useState([]);
-  const [activeFilter, setActiveFilter] = useState("today");
-  const [selectedDate, setSelectedDate] = useState(""); // 🆕 for date picker
+  const { t } = useLanguage()
+  const [history, setHistory] = useState([])
+  const [filteredHistory, setFilteredHistory] = useState([])
+  const [activeFilter, setActiveFilter] = useState("today")
+  const [selectedDate, setSelectedDate] = useState("") // 🆕 for date picker
 
   // ✅ Helper function: Remove duplicate readings (same date & time)
   const removeDuplicates = (data) => {
-    const unique = new Map();
+    const unique = new Map()
     data.forEach((item) => {
-      const key = `${item.date}-${item.time}`;
+      const key = `${item.date}-${item.time}`
       if (!unique.has(key)) {
-        unique.set(key, item);
+        unique.set(key, item)
       }
-    });
-    return Array.from(unique.values());
-  };
+    })
+    return Array.from(unique.values())
+  }
 
   // Fetch history from backend
   useEffect(() => {
     fetch("https://uvify-backend.onrender.com/history")
       .then((res) => res.json())
       .then((data) => {
-        const uniqueData = removeDuplicates(data);
+        const uniqueData = removeDuplicates(data)
         const sortedData = uniqueData.sort((a, b) => {
-          const dateTimeA = new Date(`${a.date} ${a.time}`);
-          const dateTimeB = new Date(`${b.date} ${b.time}`);
-          return dateTimeB - dateTimeA; // newest first
-        });
-        setHistory(sortedData);
-        filterData(sortedData, "today");
-      });
-  }, []);
+          const dateTimeA = new Date(`${a.date} ${a.time}`)
+          const dateTimeB = new Date(`${b.date} ${b.time}`)
+          return dateTimeB - dateTimeA // newest first
+        })
+        setHistory(sortedData)
+        filterData(sortedData, "today")
+      })
+  }, [])
 
   // 🧮 Filter data based on selected time period or date
   const filterData = (data, period, customDate = null) => {
-    const now = new Date();
-    let filtered = [];
+    const now = new Date()
+    let filtered = []
 
     if (period === "custom" && customDate) {
-      filtered = data.filter((item) => item.date === customDate);
+      filtered = data.filter((item) => item.date === customDate)
     } else {
       switch (period) {
         case "today": {
-          const todayStr = now.toISOString().split("T")[0];
-          filtered = data.filter((item) => item.date === todayStr);
-          break;
+          const todayStr = now.toISOString().split("T")[0]
+          filtered = data.filter((item) => item.date === todayStr)
+          break
         }
         case "yesterday": {
-          const yesterday = new Date(now);
-          yesterday.setDate(now.getDate() - 1);
-          const yStr = yesterday.toISOString().split("T")[0];
-          filtered = data.filter((item) => item.date === yStr);
-          break;
+          const yesterday = new Date(now)
+          yesterday.setDate(now.getDate() - 1)
+          const yStr = yesterday.toISOString().split("T")[0]
+          filtered = data.filter((item) => item.date === yStr)
+          break
         }
         case "lastWeek": {
-          const lastWeek = new Date(now);
-          lastWeek.setDate(now.getDate() - 7);
+          const lastWeek = new Date(now)
+          lastWeek.setDate(now.getDate() - 7)
           filtered = data.filter((item) => {
-            const itemDate = new Date(item.date);
-            return itemDate >= lastWeek && itemDate <= now;
-          });
-          break;
+            const itemDate = new Date(item.date)
+            return itemDate >= lastWeek && itemDate <= now
+          })
+          break
         }
         case "lastMonth": {
-          const lastMonth = new Date(now);
-          lastMonth.setMonth(now.getMonth() - 1);
+          const lastMonth = new Date(now)
+          lastMonth.setMonth(now.getMonth() - 1)
           filtered = data.filter((item) => {
-            const itemDate = new Date(item.date);
-            return itemDate >= lastMonth && itemDate <= now;
-          });
-          break;
+            const itemDate = new Date(item.date)
+            return itemDate >= lastMonth && itemDate <= now
+          })
+          break
         }
         default:
-          filtered = data;
+          filtered = data
       }
     }
 
     const cleanedFiltered = removeDuplicates(filtered).sort((a, b) => {
-      const dateTimeA = new Date(`${a.date} ${a.time}`);
-      const dateTimeB = new Date(`${b.date} ${b.time}`);
-      return dateTimeB - dateTimeA;
-    });
+      const dateTimeA = new Date(`${a.date} ${a.time}`)
+      const dateTimeB = new Date(`${b.date} ${b.time}`)
+      return dateTimeB - dateTimeA
+    })
 
-    setFilteredHistory(cleanedFiltered);
-    setActiveFilter(period);
-  };
+    setFilteredHistory(cleanedFiltered)
+    setActiveFilter(period)
+  }
 
   const handleFilterClick = (period) => {
-    setSelectedDate(""); // clear date picker when using buttons
-    filterData(history, period);
-  };
+    setSelectedDate("") // clear date picker when using buttons
+    filterData(history, period)
+  }
 
   const handleDateChange = (e) => {
-    const selected = e.target.value;
-    setSelectedDate(selected);
-    filterData(history, "custom", selected);
-    setActiveFilter("custom");
-  };
+    const selected = e.target.value
+    setSelectedDate(selected)
+    filterData(history, "custom", selected)
+    setActiveFilter("custom")
+  }
 
   return (
     <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6 text-orange-700 dark:text-orange-400">
-        📊 {t('history.title')}
-      </h1>
+      <h1 className="text-3xl font-bold mb-6 text-orange-700 dark:text-orange-400">📊 {t("history.title")}</h1>
 
       {/* Navigation Filters */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -124,12 +124,12 @@ export default function History() {
               }`}
             >
               {period === "today"
-                ? t('history.today') || "Today"
+                ? t("history.today") || "Today"
                 : period === "yesterday"
-                ? t('history.yesterday') || "Yesterday"
-                : period === "lastWeek"
-                ? t('history.lastWeek') || "Last Week"
-                : t('history.lastMonth') || "Last Month"}
+                  ? t("history.yesterday") || "Yesterday"
+                  : period === "lastWeek"
+                    ? t("history.lastWeek") || "Last Week"
+                    : t("history.lastMonth") || "Last Month"}
             </button>
           ))}
         </div>
@@ -137,7 +137,7 @@ export default function History() {
         {/* 🗓️ Date Picker */}
         <div className="flex items-center gap-2">
           <label htmlFor="date" className="text-sm font-medium text-orange-700 dark:text-orange-400">
-            {t('history.pickDate') || "Pick a Date"}:
+            {t("history.pickDate") || "Pick a Date"}:
           </label>
           <input
             type="date"
@@ -150,11 +150,11 @@ export default function History() {
       </div>
 
       {/* Results count */}
-      <p className="mt-1 mb-4 text-sm text-gray-600">
+      <p className="mt-1 mb-4 text-sm text-gray-600 dark:text-gray-400">
         Showing {filteredHistory.length} record
         {filteredHistory.length !== 1 ? "s" : ""}{" "}
         {activeFilter === "custom" && selectedDate && (
-          <span className="text-orange-600">
+          <span className="text-orange-600 dark:text-orange-400">
             for {new Date(selectedDate).toLocaleDateString()}
           </span>
         )}
@@ -165,10 +165,10 @@ export default function History() {
         <table className="min-w-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md rounded-xl">
           <thead>
             <tr className="bg-orange-100 dark:bg-orange-900/30">
-              <th className="py-3 px-4 text-left text-orange-700 dark:text-orange-400">{t('history.date')}</th>
-              <th className="py-3 px-4 text-left text-orange-700 dark:text-orange-400">{t('history.time')}</th>
-              <th className="py-3 px-4 text-left text-orange-700 dark:text-orange-400">{t('history.uvIndex')}</th>
-              <th className="py-3 px-4 text-left text-orange-700 dark:text-orange-400">{t('history.level')}</th>
+              <th className="py-3 px-4 text-left text-orange-700 dark:text-orange-400">{t("history.date")}</th>
+              <th className="py-3 px-4 text-left text-orange-700 dark:text-orange-400">{t("history.time")}</th>
+              <th className="py-3 px-4 text-left text-orange-700 dark:text-orange-400">{t("history.uvIndex")}</th>
+              <th className="py-3 px-4 text-left text-orange-700 dark:text-orange-400">{t("history.level")}</th>
             </tr>
           </thead>
 
@@ -183,8 +183,8 @@ export default function History() {
                     item.level === "High"
                       ? "text-red-600"
                       : item.level === "Moderate"
-                      ? "text-yellow-600"
-                      : "text-green-600"
+                        ? "text-yellow-600"
+                        : "text-green-600"
                   }`}
                 >
                   {item.level}
@@ -195,14 +195,9 @@ export default function History() {
             {/* Empty state */}
             {filteredHistory.length === 0 && (
               <tr>
-                <td
-                  colSpan="4"
-                  className="py-8 px-4 text-center text-gray-500"
-                >
+                <td colSpan="4" className="py-8 px-4 text-center text-gray-500">
                   No records found for{" "}
-                  {activeFilter === "custom"
-                    ? new Date(selectedDate).toLocaleDateString()
-                    : activeFilter}
+                  {activeFilter === "custom" ? new Date(selectedDate).toLocaleDateString() : activeFilter}
                 </td>
               </tr>
             )}
@@ -210,5 +205,5 @@ export default function History() {
         </table>
       </div>
     </div>
-  );
+  )
 }
