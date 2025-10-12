@@ -154,6 +154,42 @@ export default function DashboardHome() {
         </div>
       )}
 
+      {/* Prominent Latest UV Index display at the top */}
+      {latestReading && (
+        <div className="bg-gradient-to-br from-orange-100 to-yellow-100 dark:from-orange-900/30 dark:to-yellow-900/30 rounded-2xl p-6 shadow-xl border-2 border-orange-300 dark:border-orange-700">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
+                <span className="text-3xl">☀️</span>
+              </div>
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold text-orange-800 dark:text-orange-300">
+                  {t("dashboard.latestUVIndex") || "Latest UV Index"}
+                </h2>
+                <p className="text-orange-600 dark:text-orange-400 text-sm">
+                  {latestReading.date} at {latestReading.time}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-6">
+              <div className="text-center">
+                <div className="text-5xl md:text-6xl font-bold text-orange-700 dark:text-orange-400">
+                  {latestReading.uvi}
+                </div>
+                <div className="text-sm text-orange-600 dark:text-orange-500 font-medium mt-1">UV Index</div>
+              </div>
+              {uvLevelInfo && (
+                <div
+                  className={`px-6 py-3 rounded-full ${uvLevelInfo.bgColor} border-2 border-orange-300 dark:border-orange-600`}
+                >
+                  <span className={`text-xl font-bold ${uvLevelInfo.textColor}`}>{uvLevelInfo.level}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {latestReading && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* UV Gauge */}

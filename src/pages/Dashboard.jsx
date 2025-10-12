@@ -42,7 +42,7 @@ export default function Dashboard() {
 
   const navigation = [
     { name: t("nav.home"), href: "/dashboard", icon: "🏠" },
-    { name: t("nav.latest"), href: "/dashboard/latest", icon: "📊" },
+    { name: t("nav.latest"), href: "/dashboard/analytics", icon: "📊" },
     { name: t("nav.history"), href: "/dashboard/history", icon: "🕒" },
     { name: t("nav.settings"), href: "/dashboard/settings", icon: "⚙️" },
   ]
