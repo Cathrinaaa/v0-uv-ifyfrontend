@@ -3,15 +3,15 @@
 // pages/History.jsx
 import { useEffect, useState } from "react"
 import { useLanguage } from "../contexts/LanguageContext"
+import { useUVData } from "../contexts/UVDataContext"
 
 export default function History() {
   const { t } = useLanguage()
-  const [history, setHistory] = useState([])
+  const { history: contextHistory } = useUVData()
   const [filteredHistory, setFilteredHistory] = useState([])
   const [activeFilter, setActiveFilter] = useState("today")
-  const [selectedDate, setSelectedDate] = useState("") // 🆕 for date picker
+  const [selectedDate, setSelectedDate] = useState("")
 
-  // ✅ Helper function: Remove duplicate readings (same date & time)
   const removeDuplicates = (data) => {
     const unique = new Map()
     data.forEach((item) => {
@@ -23,23 +23,13 @@ export default function History() {
     return Array.from(unique.values())
   }
 
-  // Fetch history from backend
   useEffect(() => {
-    fetch("https://uvify-backend.onrender.com/history")
-      .then((res) => res.json())
-      .then((data) => {
-        const uniqueData = removeDuplicates(data)
-        const sortedData = uniqueData.sort((a, b) => {
-          const dateTimeA = new Date(`${a.date} ${a.time}`)
-          const dateTimeB = new Date(`${b.date} ${b.time}`)
-          return dateTimeB - dateTimeA // newest first
-        })
-        setHistory(sortedData)
-        filterData(sortedData, "today")
-      })
-  }, [])
+    if (contextHistory.length > 0) {
+      filterData(contextHistory, activeFilter, selectedDate || null)
+    }
+  }, [contextHistory])
 
-  // 🧮 Filter data based on selected time period or date
+  // Filter data based on selected time period or date
   const filterData = (data, period, customDate = null) => {
     const now = new Date()
     let filtered = []
@@ -94,20 +84,22 @@ export default function History() {
   }
 
   const handleFilterClick = (period) => {
-    setSelectedDate("") // clear date picker when using buttons
-    filterData(history, period)
+    setSelectedDate("")
+    filterData(contextHistory, period)
   }
 
   const handleDateChange = (e) => {
     const selected = e.target.value
     setSelectedDate(selected)
-    filterData(history, "custom", selected)
+    filterData(contextHistory, "custom", selected)
     setActiveFilter("custom")
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6 text-orange-700 dark:text-orange-400">📊 {t("history.title")}</h1>
+    <div className="p-4 md:p-6">
+      <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-orange-700 dark:text-orange-400">
+        📊 {t("history.title")}
+      </h1>
 
       {/* Navigation Filters */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

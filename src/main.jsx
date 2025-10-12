@@ -13,6 +13,7 @@ import "./index.css"
 import Profile from "./pages/Profile"
 import { LanguageProvider, useLanguage } from "./contexts/LanguageContext"
 import { ThemeProvider } from "./contexts/ThemeContext"
+import { UVDataProvider } from "./contexts/UVDataContext"
 
 // =============================
 // Simple auth context
@@ -160,9 +161,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <ThemeProvider>
       <LanguageProvider>
         <AuthProvider>
-          <BrowserRouter>
-            <App />
-          </BrowserRouter>
+          <UVDataProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </UVDataProvider>
         </AuthProvider>
       </LanguageProvider>
     </ThemeProvider>

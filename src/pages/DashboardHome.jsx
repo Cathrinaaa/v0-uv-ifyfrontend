@@ -1,28 +1,18 @@
 "use client"
 
 import { useLanguage } from "../contexts/LanguageContext"
+import { useUVData } from "../contexts/UVDataContext"
 import { Link } from "react-router-dom"
-import { useState, useEffect } from "react"
 
 export default function DashboardHome() {
   const { t } = useLanguage()
-  const [currentUV, setCurrentUV] = useState(null)
-  const [isConnected, setIsConnected] = useState(false)
-
-  // Simulate checking for device connection
-  useEffect(() => {
-    // In a real app, this would check if the UV device is connected
-    const checkConnection = () => {
-      // For now, simulate no connection
-      setIsConnected(false)
-    }
-    checkConnection()
-  }, [])
+  const { isConnected, getStats, lastUpdate } = useUVData()
+  const stats = getStats()
 
   const quickStats = [
     {
       title: t("dashboard.todaysPeak"),
-      value: isConnected ? "8.5" : "--",
+      value: stats.todaysPeak !== null ? stats.todaysPeak.toFixed(1) : "--",
       unit: "UV Index",
       icon: "📈",
       color: "from-orange-400 to-red-500",
@@ -30,7 +20,7 @@ export default function DashboardHome() {
     },
     {
       title: t("dashboard.currentReading"),
-      value: isConnected ? "6.2" : "--",
+      value: stats.currentReading !== null ? stats.currentReading.toFixed(1) : "--",
       unit: "UV Index",
       icon: "☀️",
       color: "from-yellow-400 to-orange-500",
@@ -38,7 +28,7 @@ export default function DashboardHome() {
     },
     {
       title: t("dashboard.avgThisWeek"),
-      value: isConnected ? "5.8" : "--",
+      value: stats.avgThisWeek !== null ? stats.avgThisWeek : "--",
       unit: "UV Index",
       icon: "📊",
       color: "from-blue-400 to-cyan-500",
@@ -46,7 +36,7 @@ export default function DashboardHome() {
     },
     {
       title: t("dashboard.totalReadings"),
-      value: isConnected ? "1,247" : "--",
+      value: stats.totalReadings > 0 ? stats.totalReadings.toLocaleString() : "--",
       unit: t("dashboard.readings"),
       icon: "🔢",
       color: "from-purple-400 to-pink-500",
@@ -87,6 +77,11 @@ export default function DashboardHome() {
             {t("dashboard.welcome")}
           </h1>
           <p className="text-orange-600 dark:text-orange-500 mt-1">{t("dashboard.monitorUVLevels")}</p>
+          {lastUpdate && (
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+              Last updated: {lastUpdate.toLocaleTimeString()}
+            </p>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <div
