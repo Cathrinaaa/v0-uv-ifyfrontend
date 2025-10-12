@@ -32,6 +32,8 @@ export default function Login() {
     e.preventDefault()
     setError("")
 
+    console.log("[v0] Login attempt started")
+
     try {
       const endpoint = isLogin ? "/auth/login" : "/register"
       const url = `${BACKEND_URL}${endpoint}`
@@ -46,6 +48,8 @@ export default function Login() {
             last_name: formData.last_name,
           }
 
+      console.log("[v0] Sending request to:", url)
+
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -53,21 +57,24 @@ export default function Login() {
       })
 
       const data = await res.json()
+      console.log("[v0] Response received:", data)
 
       if (!res.ok || !data.success) {
         setError(data.message || "Something went wrong")
+        console.log("[v0] Login failed:", data.message)
         return
       }
 
       if (isLogin) {
         login(data.user)
-        navigate("/dashboard/latest")
+        console.log("[v0] Login successful, navigating to dashboard")
+        navigate("/dashboard")
       } else {
         alert("Signup successful! You can now log in.")
         setIsLogin(true)
       }
     } catch (err) {
-      console.error("Auth error:", err)
+      console.error("[v0] Auth error:", err)
       setError("Server error. Please try again.")
     }
   }
