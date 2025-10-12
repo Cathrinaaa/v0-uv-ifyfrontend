@@ -13,6 +13,7 @@ export const useTheme = () => {
 }
 
 const getCookie = (name) => {
+  if (typeof document === "undefined") return null
   const value = `; ${document.cookie}`
   const parts = value.split(`; ${name}=`)
   if (parts.length === 2) return parts.pop().split(";").shift()
@@ -20,18 +21,28 @@ const getCookie = (name) => {
 }
 
 const setCookie = (name, value, days = 365) => {
+  if (typeof document === "undefined") return
   const expires = new Date()
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000)
   document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;SameSite=Lax`
 }
 
 export const ThemeProvider = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const savedTheme = getCookie("uvify_theme")
-    return savedTheme === "dark"
-  })
+  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
+    const savedTheme = getCookie("uvify_theme")
+    if (savedTheme === "dark") {
+      setIsDarkMode(true)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+
+    console.log("[v0] Theme changed to:", isDarkMode ? "dark" : "light")
     setCookie("uvify_theme", isDarkMode ? "dark" : "light")
 
     if (isDarkMode) {
@@ -39,9 +50,10 @@ export const ThemeProvider = ({ children }) => {
     } else {
       document.documentElement.classList.remove("dark")
     }
-  }, [isDarkMode])
+  }, [isDarkMode, mounted])
 
   const toggleTheme = () => {
+    console.log("[v0] Toggle theme called, current:", isDarkMode)
     setIsDarkMode((prev) => !prev)
   }
 

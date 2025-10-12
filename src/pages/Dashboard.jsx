@@ -62,21 +62,20 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative text-gray-900 dark:text-gray-100 transition-colors duration-300">
-      {/* 🌟 Header */}
-      <header className="fixed top-0 left-0 w-full bg-white/90 dark:bg-gray-800/90 backdrop-blur-md border-b border-orange-200 dark:border-gray-700 shadow-lg z-50 transition-colors duration-300">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative text-gray-900 dark:text-gray-100 transition-colors duration-300 pb-20 md:pb-0">
+      <header className="fixed top-0 left-0 w-full bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border-b border-orange-200 dark:border-gray-700 shadow-lg z-50 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-16 md:h-20">
             {/* Logo Section */}
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl shadow-lg">
-                <span className="text-xl text-white">☀️</span>
+            <div className="flex items-center space-x-2 md:space-x-3">
+              <div className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl shadow-lg">
+                <span className="text-xl md:text-2xl text-white">☀️</span>
               </div>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 dark:from-orange-400 dark:to-yellow-400 bg-clip-text text-transparent">
+                <h1 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 dark:from-orange-400 dark:to-yellow-400 bg-clip-text text-transparent">
                   {t("common.uvify")}
                 </h1>
-                <p className="text-xs text-orange-500 dark:text-orange-400 font-medium">
+                <p className="text-xs text-orange-500 dark:text-orange-400 font-medium hidden md:block">
                   {t("common.uvMonitoringSystem")}
                 </p>
               </div>
@@ -90,8 +89,8 @@ export default function Dashboard() {
                   to={item.href}
                   className={`relative flex items-center px-4 py-2 rounded-lg transition-all duration-300 group ${
                     isActive(item.href)
-                      ? "bg-gradient-to-r from-yellow-100 to-orange-100 text-orange-700 border border-orange-300 shadow-md"
-                      : "text-orange-600 hover:text-orange-800 hover:bg-orange-50/80"
+                      ? "bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-orange-900/40 dark:to-yellow-900/40 text-orange-700 dark:text-orange-400 border border-orange-300 dark:border-orange-600 shadow-md"
+                      : "text-orange-600 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300 hover:bg-orange-50/80 dark:hover:bg-gray-700/50"
                   }`}
                 >
                   <span className="text-lg mr-2">{item.icon}</span>
@@ -103,45 +102,43 @@ export default function Dashboard() {
               ))}
             </nav>
 
-            {/* User Section */}
             <div className="flex items-center">
-              {/* ✅ User Dropdown */}
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center space-x-2 p-2 rounded-lg hover:bg-orange-50/80 transition-colors duration-200"
+                  className="flex items-center space-x-2 p-2 md:p-3 rounded-lg hover:bg-orange-50/80 dark:hover:bg-gray-700/50 transition-colors duration-200 min-h-[44px]"
                 >
-                  <div className="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full flex items-center justify-center shadow-md">
-                    <span className="text-white text-sm font-bold">{getUserInitials()}</span>
+                  <div className="w-9 h-9 md:w-10 md:h-10 bg-gradient-to-r from-yellow-500 to-orange-600 rounded-full flex items-center justify-center shadow-md">
+                    <span className="text-white text-sm md:text-base font-bold">{getUserInitials()}</span>
                   </div>
-                  <span className="text-orange-700 hidden md:block font-medium">
+                  <span className="text-orange-700 dark:text-orange-400 hidden lg:block font-medium">
                     {user ? `${user.first_name} ${user.last_name}` : "User"}
                   </span>
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl shadow-2xl border border-orange-200 dark:border-gray-700 py-2 z-50 transition-colors duration-300">
-                    <div className="px-4 py-2 border-b border-orange-100 dark:border-gray-700">
-                      <p className="text-sm text-orange-800 dark:text-orange-400 font-semibold">
+                  <div className="absolute right-0 mt-2 w-56 md:w-64 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl shadow-2xl border border-orange-200 dark:border-gray-700 py-2 z-50 transition-colors duration-300">
+                    <div className="px-4 py-3 border-b border-orange-100 dark:border-gray-700">
+                      <p className="text-sm md:text-base text-orange-800 dark:text-orange-400 font-semibold">
                         {user ? `${user.first_name} ${user.last_name}` : "User"}
                       </p>
-                      <p className="text-xs text-orange-600 dark:text-orange-500">
+                      <p className="text-xs md:text-sm text-orange-600 dark:text-orange-500">
                         {user?.email || "user@example.com"}
                       </p>
                     </div>
                     <Link
                       to="/dashboard/profile"
-                      className="flex items-center px-4 py-2 text-sm text-orange-700 dark:text-orange-400 hover:text-orange-900 dark:hover:text-orange-300 hover:bg-orange-50 dark:hover:bg-gray-700"
+                      className="flex items-center px-4 py-3 text-sm md:text-base text-orange-700 dark:text-orange-400 hover:text-orange-900 dark:hover:text-orange-300 hover:bg-orange-50 dark:hover:bg-gray-700 min-h-[44px]"
                       onClick={() => setIsDropdownOpen(false)}
                     >
-                      <span className="mr-2">👤</span> {t("nav.profile")}
+                      <span className="mr-2 text-lg">👤</span> {t("nav.profile")}
                     </Link>
 
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center text-left px-4 py-2 text-sm text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-orange-50 dark:hover:bg-gray-700 border-t border-orange-100 dark:border-gray-700 mt-2"
+                      className="w-full flex items-center text-left px-4 py-3 text-sm md:text-base text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-orange-50 dark:hover:bg-gray-700 border-t border-orange-100 dark:border-gray-700 mt-2 min-h-[44px]"
                     >
-                      <span className="mr-2">🚪</span> {t("nav.logout")}
+                      <span className="mr-2 text-lg">🚪</span> {t("nav.logout")}
                     </button>
                   </div>
                 )}
@@ -151,40 +148,37 @@ export default function Dashboard() {
         </div>
       </header>
 
-      {/* Mobile Navigation */}
-      <nav className="fixed top-16 left-0 w-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-b border-orange-200 dark:border-gray-700 shadow-sm z-40 md:hidden">
-        <div className="flex px-4 space-x-1 overflow-x-auto">
+      <nav className="fixed bottom-0 left-0 w-full bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border-t border-orange-200 dark:border-gray-700 shadow-lg z-50 md:hidden transition-colors duration-300">
+        <div className="grid grid-cols-4 gap-1 px-2 py-2">
           {navigation.map((item) => (
             <Link
               key={item.name}
               to={item.href}
-              className={`flex items-center px-4 py-3 text-sm font-medium min-w-max transition-all duration-300 ${
+              className={`flex flex-col items-center justify-center py-2 px-1 rounded-lg transition-all duration-300 min-h-[60px] ${
                 isActive(item.href)
-                  ? "text-orange-700 bg-orange-50 border-b-2 border-orange-500 font-semibold"
-                  : "text-orange-600 hover:text-orange-800"
+                  ? "bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-orange-900/40 dark:to-yellow-900/40 text-orange-700 dark:text-orange-400 shadow-md"
+                  : "text-orange-600 dark:text-orange-400 hover:bg-orange-50/80 dark:hover:bg-gray-700/50"
               }`}
             >
-              <span className="text-lg mr-2">{item.icon}</span>
-              {item.name}
+              <span className="text-2xl mb-1">{item.icon}</span>
+              <span className="text-xs font-medium">{item.name}</span>
             </Link>
           ))}
         </div>
       </nav>
 
-      {/* 🌟 Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative z-10 mt-32 transition-colors duration-300">
+      <main className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 md:py-8 relative z-10 mt-16 md:mt-20 transition-colors duration-300">
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-yellow-200/40 to-orange-200/40 dark:from-orange-900/20 dark:to-yellow-900/20 rounded-3xl blur-2xl"></div>
-          <div className="relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-3xl border border-orange-200/60 dark:border-gray-700/60 shadow-lg overflow-hidden transition-colors duration-300">
-            <div className="min-h-[calc(100vh-12rem)] p-6">
+          <div className="absolute inset-0 bg-gradient-to-r from-yellow-200/40 to-orange-200/40 dark:from-orange-900/20 dark:to-yellow-900/20 rounded-2xl md:rounded-3xl blur-2xl"></div>
+          <div className="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl md:rounded-3xl border border-orange-200/60 dark:border-gray-700/60 shadow-lg overflow-hidden transition-colors duration-300">
+            <div className="min-h-[calc(100vh-10rem)] md:min-h-[calc(100vh-12rem)] p-4 md:p-6">
               <Outlet />
             </div>
           </div>
         </div>
       </main>
 
-      {/* 🌟 Footer */}
-      <footer className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-t border-orange-200 dark:border-gray-700 shadow-sm mt-8 relative z-10 transition-colors duration-300">
+      <footer className="hidden md:block bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-t border-orange-200 dark:border-gray-700 shadow-sm mt-8 relative z-10 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center space-x-3 mb-4 md:mb-0">
@@ -217,8 +211,7 @@ export default function Dashboard() {
         </div>
       </footer>
 
-      {/* 🌞 Real-time Data Bar */}
-      <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40">
+      <div className="hidden md:block fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40">
         <div className="bg-white/90 dark:bg-gray-800/90 backdrop-blur-md rounded-full px-8 py-3 border border-orange-300 dark:border-gray-600 shadow-lg transition-colors duration-300">
           <div className="flex items-center space-x-6 text-sm text-orange-700 dark:text-orange-400 font-medium">
             <span className="flex items-center">

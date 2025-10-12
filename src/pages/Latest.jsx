@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import UVGauge from "../components/UVGauge"
 import UVAnalyticsChart from "../components/UVAnalyticsChart"
 import { useLanguage } from "../contexts/LanguageContext"
+import { getUVInfo } from "../utils/uvInfo"
 
 export default function Latest() {
   const { t } = useLanguage()
@@ -102,6 +103,7 @@ export default function Latest() {
 
   const uvValue = getSafeUVValue()
   const uvLevelInfo = getUVLevel(uvValue)
+  const detailedUVInfo = getUVInfo(uvValue)
 
   // 🌞 Added: Trigger popup and sound when UV index is high or above
   useEffect(() => {
@@ -147,8 +149,10 @@ export default function Latest() {
   if (!latest) {
     return (
       <div className="flex flex-col items-center justify-center p-6">
-        <h1 className="text-3xl font-bold mb-2 text-orange-800 dark:text-orange-400">🌞 {t("latest.title")}</h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-4">{t("latest.subtitle")}</p>
+        <h1 className="text-2xl md:text-3xl font-bold mb-2 text-orange-800 dark:text-orange-400">
+          🌞 {t("latest.title")}
+        </h1>
+        <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-4">{t("latest.subtitle")}</p>
 
         {/* Connectivity Status Banner */}
         <div className="bg-yellow-100 dark:bg-yellow-900/20 border border-yellow-400 dark:border-yellow-600 text-yellow-700 dark:text-yellow-400 px-4 py-3 rounded-lg mb-6 max-w-md w-full text-center">
@@ -293,9 +297,11 @@ export default function Latest() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center p-6">
-      <h1 className="text-3xl font-bold mb-2 text-orange-800 dark:text-orange-400">🌞 {t("latest.title")}</h1>
-      <p className="text-gray-600 dark:text-gray-400 mb-4">{t("latest.subtitle")}</p>
+    <div className="flex flex-col items-center justify-center p-4 md:p-6">
+      <h1 className="text-2xl md:text-3xl font-bold mb-2 text-orange-800 dark:text-orange-400">
+        🌞 {t("latest.title")}
+      </h1>
+      <p className="text-sm md:text-base text-gray-600 dark:text-gray-400 mb-4">{t("latest.subtitle")}</p>
 
       {/* Connectivity Status Banner */}
       {!isConnected && latest && (
@@ -365,6 +371,43 @@ export default function Latest() {
             </div>
           </div>
         </div>
+
+        {latest && (
+          <div className="mt-6 w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-6 shadow-lg border border-orange-200 dark:border-gray-700">
+            <h3 className="text-lg md:text-xl font-semibold text-orange-700 dark:text-orange-400 mb-4">
+              📋 {t("latest.detailedAnalysis") || "Detailed UV Analysis"}
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Risk Level Card */}
+              <div className={`p-4 rounded-lg ${detailedUVInfo.bgColor} border-l-4 ${detailedUVInfo.borderColor}`}>
+                <h4 className="font-semibold text-sm mb-2 dark:text-gray-200">⚠️ Risk Level</h4>
+                <p className={`text-2xl font-bold ${detailedUVInfo.textColor}`}>{detailedUVInfo.level}</p>
+                <p className="text-sm mt-2 dark:text-gray-300">{detailedUVInfo.risk}</p>
+              </div>
+
+              {/* Burn Time Card */}
+              <div className="p-4 rounded-lg bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500">
+                <h4 className="font-semibold text-sm mb-2 dark:text-gray-200">⏱️ Burn Time</h4>
+                <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">{detailedUVInfo.burnTime}</p>
+                <p className="text-xs mt-2 text-gray-600 dark:text-gray-400">Time to skin damage without protection</p>
+              </div>
+            </div>
+
+            {/* Recommendations */}
+            <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+              <h4 className="font-semibold text-sm mb-3 text-blue-800 dark:text-blue-400">🛡️ Safety Recommendations</h4>
+              <ul className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
+                {detailedUVInfo.recommendations.map((rec, index) => (
+                  <li key={index} className="flex items-start">
+                    <span className="mr-2">•</span>
+                    <span>{rec}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* UV Index Scale Reference */}
