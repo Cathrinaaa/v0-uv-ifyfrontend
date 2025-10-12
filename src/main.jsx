@@ -4,7 +4,7 @@ import React from "react"
 import ReactDOM from "react-dom/client"
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import Dashboard from "./pages/Dashboard"
-import Analytics from "./pages/Analytics" // ✅ NEW: renamed from Latest to Analytics
+import Latest from "./pages/Latest" // ✅ NEW: reverted from Analytics back to Latest
 import History from "./pages/History"
 import Settings from "./pages/Settings"
 import Login from "./pages/Login"
@@ -107,8 +107,8 @@ const App = () => {
       >
         <Route index element={<DashboardHome />} />
         <Route path="home" element={<DashboardHome />} />
-        {/* ✅ NEW: renamed latest to analytics */}
-        <Route path="analytics" element={<Analytics />} />
+        {/* ✅ NEW: reverted from analytics back to latest */}
+        <Route path="latest" element={<Latest />} />
         <Route path="history" element={<History />} />
         <Route path="settings" element={<Settings />} />
         <Route path="profile" element={<Profile />} />

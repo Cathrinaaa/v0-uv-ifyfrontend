@@ -3,49 +3,11 @@
 import { useLanguage } from "../contexts/LanguageContext"
 import { useUVData } from "../contexts/UVDataContext"
 import { Link } from "react-router-dom"
-import { getUVInfo } from "../utils/uvInfo"
-import UVGauge from "../components/UVGauge" // added UV gauge import
 
 export default function DashboardHome() {
   const { t } = useLanguage()
-  const { isConnected, getStats, lastUpdate, latestReading } = useUVData()
+  const { isConnected, getStats, lastUpdate } = useUVData()
   const stats = getStats()
-
-  const currentUVInfo = stats.currentReading !== null ? getUVInfo(stats.currentReading) : null
-
-  const getUVLevel = (uvi) => {
-    if (uvi <= 2)
-      return {
-        level: t("latest.low"),
-        bgColor: "bg-green-50 dark:bg-green-900/20",
-        textColor: "text-green-600 dark:text-green-400",
-      }
-    if (uvi <= 5)
-      return {
-        level: t("latest.moderate"),
-        bgColor: "bg-yellow-50 dark:bg-yellow-900/20",
-        textColor: "text-yellow-600 dark:text-yellow-400",
-      }
-    if (uvi <= 7)
-      return {
-        level: t("latest.high"),
-        bgColor: "bg-orange-50 dark:bg-orange-900/20",
-        textColor: "text-orange-600 dark:text-orange-400",
-      }
-    if (uvi <= 10)
-      return {
-        level: t("latest.veryHigh"),
-        bgColor: "bg-red-50 dark:bg-red-900/20",
-        textColor: "text-red-600 dark:text-red-400",
-      }
-    return {
-      level: t("latest.extreme"),
-      bgColor: "bg-purple-50 dark:bg-purple-900/20",
-      textColor: "text-purple-600 dark:text-purple-400",
-    }
-  }
-
-  const uvLevelInfo = stats.currentReading !== null ? getUVLevel(stats.currentReading) : null
 
   const quickStats = [
     {
@@ -84,10 +46,10 @@ export default function DashboardHome() {
 
   const quickActions = [
     {
-      title: t("nav.analytics") || "Analytics",
-      description: t("dashboard.viewAnalytics") || "View detailed UV analytics and trends",
+      title: t("nav.latest"),
+      description: t("dashboard.viewLatestReading") || "View latest UV reading and current conditions",
       icon: "📊",
-      link: "/dashboard/analytics", // updated from latest to analytics
+      link: "/dashboard/latest",
       color: "bg-gradient-to-br from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600",
     },
     {
@@ -150,97 +112,6 @@ export default function DashboardHome() {
               </h3>
               <p className="text-yellow-700 dark:text-yellow-500 text-sm mt-1">{t("dashboard.connectDeviceMessage")}</p>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Prominent Latest UV Index display at the top */}
-      {latestReading && (
-        <div className="bg-gradient-to-br from-orange-100 to-yellow-100 dark:from-orange-900/30 dark:to-yellow-900/30 rounded-2xl p-6 shadow-xl border-2 border-orange-300 dark:border-orange-700">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-3xl">☀️</span>
-              </div>
-              <div>
-                <h2 className="text-2xl md:text-3xl font-bold text-orange-800 dark:text-orange-300">
-                  {t("dashboard.latestUVIndex") || "Latest UV Index"}
-                </h2>
-                <p className="text-orange-600 dark:text-orange-400 text-sm">
-                  {latestReading.date} at {latestReading.time}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-6">
-              <div className="text-center">
-                <div className="text-5xl md:text-6xl font-bold text-orange-700 dark:text-orange-400">
-                  {latestReading.uvi}
-                </div>
-                <div className="text-sm text-orange-600 dark:text-orange-500 font-medium mt-1">UV Index</div>
-              </div>
-              {uvLevelInfo && (
-                <div
-                  className={`px-6 py-3 rounded-full ${uvLevelInfo.bgColor} border-2 border-orange-300 dark:border-orange-600`}
-                >
-                  <span className={`text-xl font-bold ${uvLevelInfo.textColor}`}>{uvLevelInfo.level}</span>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {latestReading && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* UV Gauge */}
-          <div className="flex justify-center items-center">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-orange-200 dark:border-gray-700 transition-colors duration-300">
-              <h2 className="text-xl font-semibold mb-4 text-orange-700 dark:text-orange-400 text-center">
-                🌞 {t("dashboard.currentUVIndex") || "Current UV Index"}
-              </h2>
-              <UVGauge value={stats.currentReading || 0} size={240} />
-            </div>
-          </div>
-
-          {/* Current Reading Details */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-orange-200 dark:border-gray-700">
-            <h2 className="text-xl font-semibold mb-4 text-orange-700 dark:text-orange-400">
-              📊 {t("latest.readingDetails")}
-            </h2>
-
-            <div className="space-y-4">
-              <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                <span className="font-medium text-gray-700 dark:text-gray-300">📅 {t("latest.date")}:</span>
-                <span className="font-semibold dark:text-gray-200">{latestReading.date || "N/A"}</span>
-              </div>
-
-              <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                <span className="font-medium text-gray-700 dark:text-gray-300">⏰ {t("latest.time")}:</span>
-                <span className="font-semibold dark:text-gray-200">{latestReading.time || "N/A"}</span>
-              </div>
-
-              <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
-                <span className="font-medium text-gray-700 dark:text-gray-300">📈 {t("latest.uvIndex")}:</span>
-                <span className="font-semibold text-lg dark:text-gray-200">{latestReading.uvi}</span>
-              </div>
-
-              {uvLevelInfo && (
-                <div className={`flex items-center justify-between p-3 rounded-lg ${uvLevelInfo.bgColor}`}>
-                  <span className="font-medium text-gray-700 dark:text-gray-300">⚠️ {t("latest.level")}:</span>
-                  <span className={`font-semibold ${uvLevelInfo.textColor}`}>{uvLevelInfo.level}</span>
-                </div>
-              )}
-            </div>
-
-            {/* Current UV Level Recommendations */}
-            {currentUVInfo && (
-              <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
-                <h4 className="font-semibold text-sm mb-2 text-blue-800 dark:text-blue-400">
-                  🛡️ {t("latest.currentRecommendation") || "Current Recommendations"}
-                </h4>
-                <p className="text-sm text-blue-700 dark:text-blue-300">{currentUVInfo.recommendations[0]}</p>
-              </div>
-            )}
           </div>
         </div>
       )}
