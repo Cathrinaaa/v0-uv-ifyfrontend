@@ -3,15 +3,49 @@
 import { useLanguage } from "../contexts/LanguageContext"
 import { useUVData } from "../contexts/UVDataContext"
 import { Link } from "react-router-dom"
-import { getUVInfo, getAllUVLevels } from "../utils/uvInfo"
+import { getUVInfo } from "../utils/uvInfo"
+import UVGauge from "../components/UVGauge" // added UV gauge import
 
 export default function DashboardHome() {
   const { t } = useLanguage()
-  const { isConnected, getStats, lastUpdate } = useUVData()
+  const { isConnected, getStats, lastUpdate, latestReading } = useUVData()
   const stats = getStats()
 
   const currentUVInfo = stats.currentReading !== null ? getUVInfo(stats.currentReading) : null
-  const allUVLevels = getAllUVLevels()
+
+  const getUVLevel = (uvi) => {
+    if (uvi <= 2)
+      return {
+        level: t("latest.low"),
+        bgColor: "bg-green-50 dark:bg-green-900/20",
+        textColor: "text-green-600 dark:text-green-400",
+      }
+    if (uvi <= 5)
+      return {
+        level: t("latest.moderate"),
+        bgColor: "bg-yellow-50 dark:bg-yellow-900/20",
+        textColor: "text-yellow-600 dark:text-yellow-400",
+      }
+    if (uvi <= 7)
+      return {
+        level: t("latest.high"),
+        bgColor: "bg-orange-50 dark:bg-orange-900/20",
+        textColor: "text-orange-600 dark:text-orange-400",
+      }
+    if (uvi <= 10)
+      return {
+        level: t("latest.veryHigh"),
+        bgColor: "bg-red-50 dark:bg-red-900/20",
+        textColor: "text-red-600 dark:text-red-400",
+      }
+    return {
+      level: t("latest.extreme"),
+      bgColor: "bg-purple-50 dark:bg-purple-900/20",
+      textColor: "text-purple-600 dark:text-purple-400",
+    }
+  }
+
+  const uvLevelInfo = stats.currentReading !== null ? getUVLevel(stats.currentReading) : null
 
   const quickStats = [
     {
@@ -50,10 +84,10 @@ export default function DashboardHome() {
 
   const quickActions = [
     {
-      title: t("nav.latest"),
-      description: t("dashboard.viewLatestReadings"),
+      title: t("nav.analytics") || "Analytics",
+      description: t("dashboard.viewAnalytics") || "View detailed UV analytics and trends",
       icon: "📊",
-      link: "/dashboard/latest",
+      link: "/dashboard/analytics", // updated from latest to analytics
       color: "bg-gradient-to-br from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600",
     },
     {
@@ -116,6 +150,61 @@ export default function DashboardHome() {
               </h3>
               <p className="text-yellow-700 dark:text-yellow-500 text-sm mt-1">{t("dashboard.connectDeviceMessage")}</p>
             </div>
+          </div>
+        </div>
+      )}
+
+      {latestReading && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* UV Gauge */}
+          <div className="flex justify-center items-center">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-orange-200 dark:border-gray-700 transition-colors duration-300">
+              <h2 className="text-xl font-semibold mb-4 text-orange-700 dark:text-orange-400 text-center">
+                🌞 {t("dashboard.currentUVIndex") || "Current UV Index"}
+              </h2>
+              <UVGauge value={stats.currentReading || 0} size={240} />
+            </div>
+          </div>
+
+          {/* Current Reading Details */}
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-orange-200 dark:border-gray-700">
+            <h2 className="text-xl font-semibold mb-4 text-orange-700 dark:text-orange-400">
+              📊 {t("latest.readingDetails")}
+            </h2>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                <span className="font-medium text-gray-700 dark:text-gray-300">📅 {t("latest.date")}:</span>
+                <span className="font-semibold dark:text-gray-200">{latestReading.date || "N/A"}</span>
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                <span className="font-medium text-gray-700 dark:text-gray-300">⏰ {t("latest.time")}:</span>
+                <span className="font-semibold dark:text-gray-200">{latestReading.time || "N/A"}</span>
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+                <span className="font-medium text-gray-700 dark:text-gray-300">📈 {t("latest.uvIndex")}:</span>
+                <span className="font-semibold text-lg dark:text-gray-200">{latestReading.uvi}</span>
+              </div>
+
+              {uvLevelInfo && (
+                <div className={`flex items-center justify-between p-3 rounded-lg ${uvLevelInfo.bgColor}`}>
+                  <span className="font-medium text-gray-700 dark:text-gray-300">⚠️ {t("latest.level")}:</span>
+                  <span className={`font-semibold ${uvLevelInfo.textColor}`}>{uvLevelInfo.level}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Current UV Level Recommendations */}
+            {currentUVInfo && (
+              <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
+                <h4 className="font-semibold text-sm mb-2 text-blue-800 dark:text-blue-400">
+                  🛡️ {t("latest.currentRecommendation") || "Current Recommendations"}
+                </h4>
+                <p className="text-sm text-blue-700 dark:text-blue-300">{currentUVInfo.recommendations[0]}</p>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -199,95 +288,6 @@ export default function DashboardHome() {
               <p className="text-orange-700 dark:text-orange-500 text-sm">{t("dashboard.shadeTip")}</p>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg border border-orange-200 dark:border-gray-700">
-        <h2 className="text-2xl font-bold text-orange-700 dark:text-orange-400 mb-4 flex items-center gap-2">
-          <span>📊</span>
-          UV Index Analytics
-        </h2>
-
-        {/* Current UV Level Details */}
-        {currentUVInfo && (
-          <div
-            className={`mb-6 p-4 rounded-lg bg-${currentUVInfo.color}-50 dark:bg-${currentUVInfo.color}-900/20 border-l-4 border-${currentUVInfo.color}-500`}
-          >
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-              <div>
-                <h3
-                  className={`text-xl font-bold text-${currentUVInfo.color}-700 dark:text-${currentUVInfo.color}-400`}
-                >
-                  Current Level: {currentUVInfo.level} ({stats.currentReading.toFixed(1)})
-                </h3>
-                <p className={`text-${currentUVInfo.color}-600 dark:text-${currentUVInfo.color}-500 mt-1`}>
-                  {currentUVInfo.description}
-                </p>
-              </div>
-              <div className="text-center md:text-right">
-                <div
-                  className={`text-3xl font-bold text-${currentUVInfo.color}-700 dark:text-${currentUVInfo.color}-400`}
-                >
-                  ⏱️ {currentUVInfo.burnTime}
-                </div>
-                <p className={`text-sm text-${currentUVInfo.color}-600 dark:text-${currentUVInfo.color}-500`}>
-                  Burn Time
-                </p>
-              </div>
-            </div>
-            <div className="mt-4">
-              <h4 className={`font-semibold text-${currentUVInfo.color}-800 dark:text-${currentUVInfo.color}-400 mb-2`}>
-                Recommendations:
-              </h4>
-              <ul className={`space-y-1 text-sm text-${currentUVInfo.color}-700 dark:text-${currentUVInfo.color}-500`}>
-                {currentUVInfo.recommendations.map((rec, idx) => (
-                  <li key={idx} className="flex items-start gap-2">
-                    <span className="mt-1">•</span>
-                    <span>{rec}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
-
-        {/* UV Index Reference Table */}
-        <div className="overflow-x-auto">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-3">UV Index Reference Guide</h3>
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-200 dark:border-gray-700">
-                <th className="text-left py-2 px-3 text-gray-700 dark:text-gray-300">Level</th>
-                <th className="text-left py-2 px-3 text-gray-700 dark:text-gray-300">Range</th>
-                <th className="text-left py-2 px-3 text-gray-700 dark:text-gray-300">Risk</th>
-                <th className="text-left py-2 px-3 text-gray-700 dark:text-gray-300">Burn Time</th>
-              </tr>
-            </thead>
-            <tbody>
-              {allUVLevels.map((level, idx) => (
-                <tr
-                  key={idx}
-                  className={`border-b border-gray-100 dark:border-gray-700 bg-${level.color}-50/50 dark:bg-${level.color}-900/10`}
-                >
-                  <td className={`py-3 px-3 font-semibold text-${level.color}-700 dark:text-${level.color}-400`}>
-                    {level.level}
-                  </td>
-                  <td className={`py-3 px-3 text-${level.color}-600 dark:text-${level.color}-500`}>{level.range}</td>
-                  <td className={`py-3 px-3 text-${level.color}-600 dark:text-${level.color}-500`}>{level.risk}</td>
-                  <td className={`py-3 px-3 text-${level.color}-600 dark:text-${level.color}-500`}>{level.burnTime}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Important Note */}
-        <div className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg">
-          <p className="text-sm text-blue-800 dark:text-blue-400">
-            <strong>Note:</strong> UV radiation levels fluctuate from day to day, and also by time of day, with more
-            intense ultraviolet radiation during the middle of the day. Avoid direct exposure to UV radiation during
-            midday, especially for long periods of time.
-          </p>
         </div>
       </div>
     </div>

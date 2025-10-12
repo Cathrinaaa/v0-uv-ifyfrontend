@@ -2,16 +2,16 @@
 
 import React from "react"
 import ReactDOM from "react-dom/client"
-import { BrowserRouter, Routes, Route, Navigate, Link } from "react-router-dom"
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import Dashboard from "./pages/Dashboard"
-import Latest from "./pages/Latest"
+import Analytics from "./pages/Analytics" // ✅ NEW: renamed from Latest to Analytics
 import History from "./pages/History"
 import Settings from "./pages/Settings"
 import Login from "./pages/Login"
 import DashboardHome from "./pages/DashboardHome" // ✅ NEW: import DashboardHome
 import "./index.css"
 import Profile from "./pages/Profile"
-import { LanguageProvider, useLanguage } from "./contexts/LanguageContext"
+import { LanguageProvider } from "./contexts/LanguageContext"
 import { ThemeProvider } from "./contexts/ThemeContext"
 import { UVDataProvider } from "./contexts/UVDataContext"
 
@@ -70,41 +70,10 @@ export const AuthProvider = ({ children }) => {
 // =============================
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = React.useContext(AuthContext)
-  return isAuthenticated() ? children : <Navigate to="/login" replace />
+  return isAuthenticated() ? children : <Navigate to="/" replace />
 }
 
-const PublicRoute = ({ children }) => {
-  const { isAuthenticated } = React.useContext(AuthContext)
-  return !isAuthenticated() ? children : <Navigate to="/dashboard" replace />
-}
-
-const LandingPage = () => {
-  const { t } = useLanguage()
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-400 to-orange-500 dark:from-yellow-600 dark:to-orange-700 flex items-center justify-center p-4 transition-colors duration-300">
-      <div className="text-center text-white max-w-md">
-        <h1 className="text-5xl font-bold mb-4">☀️ {t("landing.title")}</h1>
-        <p className="text-xl mb-6">{t("landing.subtitle")}</p>
-        <p className="text-lg mb-8 opacity-90">{t("landing.description")}</p>
-        <div className="space-y-4">
-          <Link
-            to="/dashboard"
-            className="block bg-white text-orange-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
-          >
-            {t("landing.enterDashboard")}
-          </Link>
-          <Link
-            to="/login"
-            className="block border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:bg-opacity-10 transition-colors"
-          >
-            {t("landing.adminLogin")}
-          </Link>
-        </div>
-      </div>
-    </div>
-  )
-}
+// ✅ REMOVED: PublicRoute since login is now the landing page
 
 const LoadingSpinner = () => (
   <div className="flex items-center justify-center min-h-screen">
@@ -124,16 +93,9 @@ const App = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
-
-      <Route
-        path="/login"
-        element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        }
-      />
+      {/* ✅ NEW: Login is now the landing page */}
+      <Route path="/" element={<Login />} />
+      <Route path="/login" element={<Login />} />
 
       <Route
         path="/dashboard"
@@ -145,7 +107,8 @@ const App = () => {
       >
         <Route index element={<DashboardHome />} />
         <Route path="home" element={<DashboardHome />} />
-        <Route path="latest" element={<Latest />} />
+        {/* ✅ NEW: renamed latest to analytics */}
+        <Route path="analytics" element={<Analytics />} />
         <Route path="history" element={<History />} />
         <Route path="settings" element={<Settings />} />
         <Route path="profile" element={<Profile />} />
