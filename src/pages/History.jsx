@@ -11,6 +11,8 @@ export default function History() {
   const [filteredHistory, setFilteredHistory] = useState([])
   const [activeFilter, setActiveFilter] = useState("today")
   const [selectedDate, setSelectedDate] = useState("")
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 20
 
   const removeDuplicates = (data) => {
     const unique = new Map()
@@ -28,6 +30,10 @@ export default function History() {
       filterData(contextHistory, activeFilter, selectedDate || null)
     }
   }, [contextHistory])
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [filteredHistory])
 
   // Filter data based on selected time period or date
   const filterData = (data, period, customDate = null) => {
@@ -95,6 +101,15 @@ export default function History() {
     setActiveFilter("custom")
   }
 
+  const totalPages = Math.ceil(filteredHistory.length / itemsPerPage)
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const currentPageData = filteredHistory.slice(startIndex, endIndex)
+
+  const goToPage = (page) => {
+    setCurrentPage(Math.max(1, Math.min(page, totalPages)))
+  }
+
   return (
     <div className="p-4 md:p-6">
       <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-orange-700 dark:text-orange-400">
@@ -143,7 +158,7 @@ export default function History() {
 
       {/* Results count */}
       <p className="mt-1 mb-4 text-sm text-gray-600 dark:text-gray-400">
-        Showing {filteredHistory.length} record
+        Showing {startIndex + 1}-{Math.min(endIndex, filteredHistory.length)} of {filteredHistory.length} record
         {filteredHistory.length !== 1 ? "s" : ""}{" "}
         {activeFilter === "custom" && selectedDate && (
           <span className="text-orange-600 dark:text-orange-400">
@@ -165,7 +180,7 @@ export default function History() {
           </thead>
 
           <tbody>
-            {filteredHistory.map((item, i) => (
+            {currentPageData.map((item, i) => (
               <tr key={i} className="border-b border-orange-200 dark:border-gray-700">
                 <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{item.date}</td>
                 <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{item.time}</td>
@@ -196,6 +211,76 @@ export default function History() {
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="text-sm text-gray-600 dark:text-gray-400">
+            Page {currentPage} of {totalPages}
+          </div>
+
+          <div className="flex items-center gap-2">
+            {/* Previous Button */}
+            <button
+              onClick={() => goToPage(currentPage - 1)}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                currentPage === 1
+                  ? "bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                  : "bg-orange-500 text-white hover:bg-orange-600"
+              }`}
+            >
+              Previous
+            </button>
+
+            {/* Page Numbers */}
+            <div className="flex gap-1">
+              {[...Array(totalPages)].map((_, index) => {
+                const pageNum = index + 1
+                // Show first page, last page, current page, and pages around current
+                if (
+                  pageNum === 1 ||
+                  pageNum === totalPages ||
+                  (pageNum >= currentPage - 1 && pageNum <= currentPage + 1)
+                ) {
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => goToPage(pageNum)}
+                      className={`w-10 h-10 rounded-lg font-medium transition-colors ${
+                        currentPage === pageNum
+                          ? "bg-orange-500 text-white"
+                          : "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 hover:bg-orange-200 dark:hover:bg-orange-900/50"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  )
+                } else if (pageNum === currentPage - 2 || pageNum === currentPage + 2) {
+                  return (
+                    <span key={pageNum} className="w-10 h-10 flex items-center justify-center text-gray-400">
+                      ...
+                    </span>
+                  )
+                }
+                return null
+              })}
+            </div>
+
+            {/* Next Button */}
+            <button
+              onClick={() => goToPage(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                currentPage === totalPages
+                  ? "bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed"
+                  : "bg-orange-500 text-white hover:bg-orange-600"
+              }`}
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

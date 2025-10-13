@@ -42,32 +42,34 @@ export default function UVNotification() {
   const uvInfo = getUVLevel(currentUV)
 
   return (
-    <div className="fixed top-20 md:top-24 left-1/2 transform -translate-x-1/2 z-50 w-11/12 max-w-md animate-bounce">
-      <div className="bg-red-50 dark:bg-red-900/30 border-2 border-red-500 dark:border-red-600 rounded-xl shadow-2xl p-4">
-        <div className="flex items-start gap-3">
-          <div className="flex-shrink-0">
-            <div className={`w-12 h-12 ${uvInfo.color} rounded-full flex items-center justify-center animate-pulse`}>
-              <span className="text-2xl">⚠️</span>
+    <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+      <div className="w-11/12 max-w-md pointer-events-auto animate-bounce">
+        <div className="bg-red-50 dark:bg-red-900/30 border-2 border-red-500 dark:border-red-600 rounded-xl shadow-2xl p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0">
+              <div className={`w-12 h-12 ${uvInfo.color} rounded-full flex items-center justify-center animate-pulse`}>
+                <span className="text-2xl">⚠️</span>
+              </div>
             </div>
+            <div className="flex-1">
+              <h3 className="text-red-800 dark:text-red-400 font-bold text-lg">
+                {t("notification.highUVAlert") || "High UV Alert!"}
+              </h3>
+              <p className="text-red-700 dark:text-red-500 text-sm mt-1">
+                {t("notification.currentUV") || "Current UV Index"}:{" "}
+                <span className="font-bold">{currentUV.toFixed(1)}</span> ({uvInfo.level})
+              </p>
+              <p className="text-red-600 dark:text-red-400 text-xs mt-2">
+                {t("notification.protectionAdvice") || "Wear sunscreen, protective clothing, and seek shade!"}
+              </p>
+            </div>
+            <button
+              onClick={() => setShowNotification(false)}
+              className="flex-shrink-0 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+            >
+              <span className="text-xl">✕</span>
+            </button>
           </div>
-          <div className="flex-1">
-            <h3 className="text-red-800 dark:text-red-400 font-bold text-lg">
-              {t("notification.highUVAlert") || "High UV Alert!"}
-            </h3>
-            <p className="text-red-700 dark:text-red-500 text-sm mt-1">
-              {t("notification.currentUV") || "Current UV Index"}:{" "}
-              <span className="font-bold">{currentUV.toFixed(1)}</span> ({uvInfo.level})
-            </p>
-            <p className="text-red-600 dark:text-red-400 text-xs mt-2">
-              {t("notification.protectionAdvice") || "Wear sunscreen, protective clothing, and seek shade!"}
-            </p>
-          </div>
-          <button
-            onClick={() => setShowNotification(false)}
-            className="flex-shrink-0 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-colors"
-          >
-            <span className="text-xl">✕</span>
-          </button>
         </div>
       </div>
     </div>
