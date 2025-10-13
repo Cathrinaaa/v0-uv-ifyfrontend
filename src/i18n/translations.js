@@ -192,6 +192,11 @@ export const translations = {
       alreadyHaveAccount: "Already have an account?",
       signIn: "Sign In",
     },
+    notification: {
+      highUVAlert: "High UV Alert!",
+      currentUV: "Current UV Index",
+      protectionAdvice: "Wear sunscreen, protective clothing, and seek shade!",
+    },
   },
   tl: {
     common: {
@@ -388,6 +393,11 @@ export const translations = {
       alreadyHaveAccount: "Mayroon nang account?",
       signIn: "Mag-sign In",
     },
+    notification: {
+      highUVAlert: "High UV Alert!",
+      currentUV: "Current UV Index",
+      protectionAdvice: "Wear sunscreen, protective clothing, and seek shade!",
+    },
   },
   ilo: {
     common: {
@@ -583,6 +593,11 @@ export const translations = {
       confirmPassword: "Pasingkedan ti Password",
       alreadyHaveAccount: "Adda ti account?",
       signIn: "Sumrek",
+    },
+    notification: {
+      highUVAlert: "Ballaag: Nangato ti UV!",
+      currentUV: "Agdama nga UV Index",
+      protectionAdvice: "Agsuot ti sunscreen, protective clothing, ken agsapul ti linong!",
     },
   },
 }

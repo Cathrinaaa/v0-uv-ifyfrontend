@@ -5,6 +5,7 @@ import { useState, useEffect, useRef, useContext } from "react"
 import { AuthContext } from "../main"
 import { useLanguage } from "../contexts/LanguageContext"
 import { useTheme } from "../contexts/ThemeContext"
+import UVNotification from "../components/UVNotification"
 
 export default function Dashboard() {
   const location = useLocation()
@@ -63,6 +64,8 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative text-gray-900 dark:text-gray-100 transition-colors duration-300 pb-20 md:pb-0">
+      <UVNotification />
+
       <header className="fixed top-0 left-0 w-full bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border-b border-orange-200 dark:border-gray-700 shadow-lg z-50 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 md:h-20">

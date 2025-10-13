@@ -2,7 +2,6 @@
 
 import { useLanguage } from "../contexts/LanguageContext"
 import { useUVData } from "../contexts/UVDataContext"
-import { Link } from "react-router-dom"
 
 export default function DashboardHome() {
   const { t } = useLanguage()
@@ -44,27 +43,84 @@ export default function DashboardHome() {
     },
   ]
 
-  const quickActions = [
+  const uvAnalytics = [
     {
-      title: t("nav.latest"),
-      description: t("dashboard.viewLatestReading") || "View latest UV reading and current conditions",
-      icon: "📊",
-      link: "/dashboard/latest",
-      color: "bg-gradient-to-br from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600",
+      range: "1-2",
+      level: "Low",
+      risk: "Minimal",
+      burnTime: "60 minutes",
+      color: "bg-green-500",
+      borderColor: "border-green-500",
+      bgLight: "bg-green-50 dark:bg-green-900/20",
+      textColor: "text-green-700 dark:text-green-400",
+      recommendations: [
+        "Use sunscreen of at least SPF 30",
+        "Still take precautions when outdoors",
+        "Minimal risk but protection recommended",
+      ],
     },
     {
-      title: t("nav.history"),
-      description: t("dashboard.viewHistoricalData"),
-      icon: "🕒",
-      link: "/dashboard/history",
-      color: "bg-gradient-to-br from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600",
+      range: "3-5",
+      level: "Moderate",
+      risk: "Moderate",
+      burnTime: "45 minutes",
+      color: "bg-yellow-500",
+      borderColor: "border-yellow-500",
+      bgLight: "bg-yellow-50 dark:bg-yellow-900/20",
+      textColor: "text-yellow-700 dark:text-yellow-400",
+      recommendations: [
+        "Reapply sunscreen every two hours",
+        "Wear sunglasses for eye protection",
+        "Limit time outside between 10 AM - 4 PM",
+      ],
     },
     {
-      title: t("nav.settings"),
-      description: t("dashboard.configureSettings"),
-      icon: "⚙️",
-      link: "/dashboard/settings",
-      color: "bg-gradient-to-br from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600",
+      range: "6-7",
+      level: "High",
+      risk: "High",
+      burnTime: "30 minutes",
+      color: "bg-orange-500",
+      borderColor: "border-orange-500",
+      bgLight: "bg-orange-50 dark:bg-orange-900/20",
+      textColor: "text-orange-700 dark:text-orange-400",
+      recommendations: [
+        "Wear sun-protective clothing (long sleeves, pants)",
+        "Wear a hat with a wide brim",
+        "Apply broad-spectrum sunscreen, reapply every 2 hours",
+        "Seek shade during peak sun hours",
+      ],
+    },
+    {
+      range: "8-10",
+      level: "Very High",
+      risk: "Very High",
+      burnTime: "15-25 minutes",
+      color: "bg-red-500",
+      borderColor: "border-red-500",
+      bgLight: "bg-red-50 dark:bg-red-900/20",
+      textColor: "text-red-700 dark:text-red-400",
+      recommendations: [
+        "Use sunscreen of at least SPF 50",
+        "Limit time outdoors as much as possible",
+        "Wear sun-protective clothing covering arms and legs",
+        "Seek shade, especially 10 AM - 4 PM",
+      ],
+    },
+    {
+      range: "11+",
+      level: "Extreme",
+      risk: "Extreme",
+      burnTime: "< 10 minutes",
+      color: "bg-purple-500",
+      borderColor: "border-purple-500",
+      bgLight: "bg-purple-50 dark:bg-purple-900/20",
+      textColor: "text-purple-700 dark:text-purple-400",
+      recommendations: [
+        "Avoid direct sunlight as much as possible",
+        "Apply SPF 50+ sunscreen frequently",
+        "Wear clothing covering arms and legs",
+        "High risk of skin cancer with chronic exposure",
+      ],
     },
   ]
 
@@ -136,26 +192,52 @@ export default function DashboardHome() {
         ))}
       </div>
 
-      {/* Quick Actions */}
       <div>
-        <h2 className="text-2xl font-bold text-orange-700 dark:text-orange-400 mb-4">{t("dashboard.quickActions")}</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {quickActions.map((action, index) => (
-            <Link
+        <h2 className="text-2xl font-bold text-orange-700 dark:text-orange-400 mb-4 flex items-center gap-2">
+          <span>📊</span>
+          {t("dashboard.uvAnalytics") || "UV Index Analytics"}
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {uvAnalytics.map((item, index) => (
+            <div
               key={index}
-              to={action.link}
-              className={`${action.color} text-white rounded-xl p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group`}
+              className={`${item.bgLight} rounded-xl p-5 border-2 ${item.borderColor} shadow-lg hover:shadow-xl transition-all duration-300`}
             >
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-4xl">{action.icon}</span>
-                <h3 className="text-xl font-bold">{action.title}</h3>
+              <div className="flex items-center justify-between mb-3">
+                <div>
+                  <h3 className={`text-xl font-bold ${item.textColor}`}>{item.level}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    UV Index: <span className="font-semibold">{item.range}</span>
+                  </p>
+                </div>
+                <div className={`w-12 h-12 ${item.color} rounded-full flex items-center justify-center shadow-md`}>
+                  <span className="text-white text-xl font-bold">{item.range.split("-")[0]}</span>
+                </div>
               </div>
-              <p className="text-white/90 text-sm">{action.description}</p>
-              <div className="mt-4 flex items-center text-sm font-medium">
-                <span>{t("dashboard.goTo")}</span>
-                <span className="ml-2 transform group-hover:translate-x-1 transition-transform">→</span>
+
+              <div className="space-y-2 mb-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Risk Level:</span>
+                  <span className={`text-sm font-bold ${item.textColor}`}>{item.risk}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Burn Time:</span>
+                  <span className={`text-sm font-bold ${item.textColor}`}>{item.burnTime}</span>
+                </div>
               </div>
-            </Link>
+
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
+                <p className="text-xs font-semibold text-gray-700 dark:text-gray-300 mb-2">Recommendations:</p>
+                <ul className="space-y-1">
+                  {item.recommendations.map((rec, idx) => (
+                    <li key={idx} className="text-xs text-gray-600 dark:text-gray-400 flex items-start gap-1">
+                      <span className="text-orange-500 mt-0.5">•</span>
+                      <span>{rec}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           ))}
         </div>
       </div>
