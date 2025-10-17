@@ -206,7 +206,7 @@ export default function DashboardHome() {
       <div>
         <h2 className="text-2xl font-bold text-orange-700 dark:text-orange-400 mb-4 flex items-center gap-2">
           <span>📊</span>
-          {t("UVAnalytics") || "UV Index Analytics"}
+          {t("UVInformations") || "UV Index Analytics"}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {uvAnalytics.map((item, index) => (

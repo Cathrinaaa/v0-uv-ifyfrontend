@@ -14,7 +14,7 @@ export default function UVAnalyticsChart() {
 
   const fetchHistoryData = async () => {
     try {
-      const response = await fetch("https://uvify-backend.onrender.com/history");
+      const response = await fetch("https://uvify-backend.onrender.com/latest");
       const data = await response.json();
       
       const last7Days = data.slice(-20);
