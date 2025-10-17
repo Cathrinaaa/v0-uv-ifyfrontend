@@ -217,32 +217,65 @@ export default function Latest() {
           </div>
         </div>
 
-        {/* UV Index Scale Reference */}
-        <div className="mt-8 bg-gradient-to-r from-green-50 via-yellow-50 to-red-50 dark:from-gray-800 dark:via-gray-800 dark:to-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 max-w-4xl w-full">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">📏 {t("latest.uvIndexScale")}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
-            <div className="text-center p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-              <div className="font-bold text-green-700 dark:text-green-400">0-2</div>
-              <div className="text-green-600 dark:text-green-500">{t("latest.low")}</div>
-            </div>
-            <div className="text-center p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
-              <div className="font-bold text-yellow-700 dark:text-yellow-400">3-5</div>
-              <div className="text-yellow-600 dark:text-yellow-500">{t("latest.moderate")}</div>
-            </div>
-            <div className="text-center p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
-              <div className="font-bold text-orange-700 dark:text-orange-400">6-7</div>
-              <div className="text-orange-600 dark:text-orange-500">{t("latest.high")}</div>
-            </div>
-            <div className="text-center p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
-              <div className="font-bold text-red-700 dark:text-red-400">8-10</div>
-              <div className="text-red-600 dark:text-red-500">{t("latest.veryHigh")}</div>
-            </div>
-            <div className="text-center p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-              <div className="font-bold text-purple-700 dark:text-purple-400">11+</div>
-              <div className="text-purple-600 dark:text-purple-500">{t("latest.extreme")}</div>
-            </div>
-          </div>
-        </div>
+        {/* 🌈 Updated UV Index Scale Reference */}
+<div className="mt-10 bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg border border-orange-200 dark:border-gray-700 max-w-4xl w-full">
+  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4 flex items-center">
+    📏 {t("latest.uvIndexScale") || "UV Index Scale & Meaning"}
+  </h3>
+
+  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 text-xs md:text-sm">
+    {/* Low */}
+    <div className="text-center p-4 rounded-xl bg-green-100 dark:bg-green-900/30 border border-green-300 dark:border-green-700 hover:scale-105 transition-transform duration-200">
+      <div className="font-bold text-green-700 dark:text-green-400 text-lg">0–2</div>
+      <div className="text-green-600 dark:text-green-300 font-medium">{t("latest.low") || "Low"}</div>
+      <p className="mt-1 text-gray-600 dark:text-gray-400 text-xs">
+        {t("latest.lowAdvice") || "Minimal risk. Safe for outdoor activity."}
+      </p>
+    </div>
+
+    {/* Moderate */}
+    <div className="text-center p-4 rounded-xl bg-yellow-100 dark:bg-yellow-900/30 border border-yellow-300 dark:border-yellow-700 hover:scale-105 transition-transform duration-200">
+      <div className="font-bold text-yellow-700 dark:text-yellow-400 text-lg">3–5</div>
+      <div className="text-yellow-600 dark:text-yellow-300 font-medium">{t("latest.moderate") || "Moderate"}</div>
+      <p className="mt-1 text-gray-600 dark:text-gray-400 text-xs">
+        {t("latest.moderateAdvice") || "Use sunglasses & sunscreen outdoors."}
+      </p>
+    </div>
+
+    {/* High */}
+    <div className="text-center p-4 rounded-xl bg-orange-100 dark:bg-orange-900/30 border border-orange-300 dark:border-orange-700 hover:scale-105 transition-transform duration-200">
+      <div className="font-bold text-orange-700 dark:text-orange-400 text-lg">6–7</div>
+      <div className="text-orange-600 dark:text-orange-300 font-medium">{t("latest.high") || "High"}</div>
+      <p className="mt-1 text-gray-600 dark:text-gray-400 text-xs">
+        {t("latest.highAdvice") || "Limit exposure. Wear protective clothing."}
+      </p>
+    </div>
+
+    {/* Very High */}
+    <div className="text-center p-4 rounded-xl bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 hover:scale-105 transition-transform duration-200">
+      <div className="font-bold text-red-700 dark:text-red-400 text-lg">8–10</div>
+      <div className="text-red-600 dark:text-red-300 font-medium">{t("latest.veryHigh") || "Very High"}</div>
+      <p className="mt-1 text-gray-600 dark:text-gray-400 text-xs">
+        {t("latest.veryHighAdvice") || "Avoid the sun from 10AM–4PM if possible."}
+      </p>
+    </div>
+
+    {/* Extreme */}
+    <div className="text-center p-4 rounded-xl bg-purple-100 dark:bg-purple-900/30 border border-purple-300 dark:border-purple-700 hover:scale-105 transition-transform duration-200">
+      <div className="font-bold text-purple-700 dark:text-purple-400 text-lg">11+</div>
+      <div className="text-purple-600 dark:text-purple-300 font-medium">{t("latest.extreme") || "Extreme"}</div>
+      <p className="mt-1 text-gray-600 dark:text-gray-400 text-xs">
+        {t("latest.extremeAdvice") || "Stay indoors. Unprotected skin burns in minutes."}
+      </p>
+    </div>
+  </div>
+
+  <p className="mt-6 text-xs text-center text-gray-500 dark:text-gray-400 italic">
+    {t("latest.scaleDisclaimer") ||
+      "Based on the World Health Organization’s UV Index guidelines."}
+  </p>
+</div>
+
 
         {/* Safety Information */}
         <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-2xl p-6 max-w-4xl w-full">
