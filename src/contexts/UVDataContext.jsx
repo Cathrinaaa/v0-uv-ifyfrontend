@@ -18,7 +18,7 @@ export const UVDataProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false)
   const [lastUpdate, setLastUpdate] = useState(null)
 
-  // Helper function: Remove duplicate readings (same date & time)
+  // 🧩 Helper: Remove duplicate readings (same date & time)
   const removeDuplicates = (data) => {
     const unique = new Map()
     data.forEach((item) => {
@@ -30,21 +30,43 @@ export const UVDataProvider = ({ children }) => {
     return Array.from(unique.values())
   }
 
-  // Fetch history from backend
+  // 🧠 Helper: Format date & time for display
+  const formatDateTime = (date, time) => {
+    const dateTime = new Date(`${date}T${time}`)
+    return dateTime.toLocaleString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true,
+    })
+  }
+
+  // 📦 Fetch UV history from backend
   const fetchHistory = async () => {
     try {
       const response = await fetch("https://uvify-backend.onrender.com/history")
       const data = await response.json()
 
+      // ✅ Remove duplicates
       const uniqueData = removeDuplicates(data)
+
+      // ✅ Sort by newest first
       const sortedData = uniqueData.sort((a, b) => {
         const dateTimeA = new Date(`${a.date} ${a.time}`)
         const dateTimeB = new Date(`${b.date} ${b.time}`)
-        return dateTimeB - dateTimeA // newest first
+        return dateTimeB - dateTimeA
       })
 
-      setHistory(sortedData)
-      setIsConnected(sortedData.length > 0)
+      // ✅ Add formatted date-time field
+      const enrichedData = sortedData.map((item) => ({
+        ...item,
+        formattedDateTime: formatDateTime(item.date, item.time),
+      }))
+
+      setHistory(enrichedData)
+      setIsConnected(enrichedData.length > 0)
       setLastUpdate(new Date())
       setIsLoading(false)
     } catch (error) {
@@ -54,20 +76,20 @@ export const UVDataProvider = ({ children }) => {
     }
   }
 
-  // Initial fetch
+  // ⏱️ Initial fetch
   useEffect(() => {
     fetchHistory()
   }, [])
 
+  // 🔁 Auto-refresh every 30 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       fetchHistory()
-    }, 30000) // 30 seconds
-
+    }, 30000)
     return () => clearInterval(interval)
   }, [])
 
-  // Calculate statistics from history
+  // 📊 Calculate statistics
   const getStats = () => {
     if (history.length === 0) {
       return {
@@ -85,26 +107,25 @@ export const UVDataProvider = ({ children }) => {
     const lastWeek = new Date(now)
     lastWeek.setDate(now.getDate() - 7)
 
-    // Today's readings
     const todaysReadings = history.filter((item) => item.date === todayStr)
-
-    // This week's readings
     const weekReadings = history.filter((item) => {
       const itemDate = new Date(item.date)
       return itemDate >= lastWeek && itemDate <= now
     })
 
-    // Calculate today's peak
     const todaysPeak =
-      todaysReadings.length > 0 ? Math.max(...todaysReadings.map((item) => Number.parseFloat(item.uvi))) : null
+      todaysReadings.length > 0
+        ? Math.max(...todaysReadings.map((item) => Number.parseFloat(item.uvi)))
+        : null
 
-    // Get current reading (most recent)
     const currentReading = history.length > 0 ? Number.parseFloat(history[0].uvi) : null
 
-    // Calculate average for this week
     const avgThisWeek =
       weekReadings.length > 0
-        ? (weekReadings.reduce((sum, item) => sum + Number.parseFloat(item.uvi), 0) / weekReadings.length).toFixed(1)
+        ? (
+            weekReadings.reduce((sum, item) => sum + Number.parseFloat(item.uvi), 0) /
+            weekReadings.length
+          ).toFixed(1)
         : null
 
     return {
@@ -118,7 +139,7 @@ export const UVDataProvider = ({ children }) => {
   }
 
   const value = {
-    history,
+    history, // Each item includes `formattedDateTime`
     isLoading,
     isConnected,
     lastUpdate,
