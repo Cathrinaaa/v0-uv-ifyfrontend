@@ -15,10 +15,6 @@ export default function Latest() {
   const [lastUpdated, setLastUpdated] = useState(new Date())
   const [isConnected, setIsConnected] = useState(true)
 
-  // 🌞 Added: States for popup and alert sound
-  const [showReminder, setShowReminder] = useState(false)
-  const [hasPlayedAlert, setHasPlayedAlert] = useState(false)
-
   const fetchLatestData = async () => {
     try {
       setError(null)
@@ -51,14 +47,12 @@ export default function Latest() {
     return () => clearInterval(interval)
   }, [])
 
-  // Safe UV value parsing
   const getSafeUVValue = () => {
     if (!latest || !latest.uvi) return 0
     const uvValue = Number.parseFloat(latest.uvi)
     return isNaN(uvValue) ? 0 : Math.max(0, uvValue)
   }
 
-  // Get UV level description
   const getUVLevel = (uvi) => {
     if (uvi <= 2)
       return {
@@ -104,21 +98,6 @@ export default function Latest() {
   const uvValue = getSafeUVValue()
   const uvLevelInfo = getUVLevel(uvValue)
   const detailedUVInfo = getUVInfo(uvValue)
-
-  // 🌞 Added: Trigger popup and sound when UV index is high or above
-  useEffect(() => {
-    if (latest && Number.parseFloat(latest.uvi) >= 6) {
-      setShowReminder(true)
-      if (!hasPlayedAlert) {
-        const alertSound = new Audio("/alert.mp3")
-        alertSound.play().catch((err) => console.warn("Audio play blocked:", err))
-        setHasPlayedAlert(true)
-      }
-    } else {
-      setShowReminder(false)
-      setHasPlayedAlert(false)
-    }
-  }, [latest])
 
   if (loading) {
     return (
@@ -501,28 +480,6 @@ export default function Latest() {
       <div className="mt-8 w-full max-w-4xl">
         <UVAnalyticsChart />
       </div>
-
-      {/* 🌞 Added: Popup Reminder with Fade Animation */}
-      {showReminder && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 animate-fade-in">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-2xl border border-orange-300 dark:border-orange-600 text-center max-w-sm w-full transform transition-all scale-100 hover:scale-105">
-            <h3 className="text-xl font-bold text-orange-700 dark:text-orange-400 mb-2 animate-bounce">
-              ⚠️ {t("latest.highUVAlert")}
-            </h3>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
-              {t("latest.uvIndexCurrently")} <strong>{latest.uvi}</strong> — {uvLevelInfo.level}.
-              <br />
-              {t("latest.protectYourself")}
-            </p>
-            <button
-              onClick={() => setShowReminder(false)}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition"
-            >
-              {t("latest.gotIt")}
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
