@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react"
 import UVGauge from "../components/UVGauge"
 import UVAnalyticsChart from "../components/UVAnalyticsChart"
+import UVAccumulationAnalytics from "../components/UVAccumulationAnalytics"
 import { useLanguage } from "../contexts/LanguageContext"
 import { getUVInfo } from "../utils/uvInfo"
 
@@ -479,6 +480,11 @@ export default function Latest() {
       {/* UV Analytics Chart */}
       <div className="mt-8 w-full max-w-4xl">
         <UVAnalyticsChart />
+      </div>
+
+      {/* UV Accumulation Analytics */}
+      <div className="mt-8 w-full max-w-4xl">
+        <UVAccumulationAnalytics />
       </div>
     </div>
   )
