@@ -6,7 +6,6 @@ import UVGauge from "../components/UVGauge"
 import UVAnalyticsChart from "../components/UVAnalyticsChart"
 import UVAccumulationAnalytics from "../components/UVAccumulationAnalytics"
 import { useLanguage } from "../contexts/LanguageContext"
-import { getUVInfo } from "../utils/uvInfo"
 
 export default function Latest() {
   const { t } = useLanguage()
@@ -98,7 +97,6 @@ export default function Latest() {
 
   const uvValue = getSafeUVValue()
   const uvLevelInfo = getUVLevel(uvValue)
-  const detailedUVInfo = getUVInfo(uvValue)
 
   if (loading) {
     return (
@@ -197,77 +195,6 @@ export default function Latest() {
           </div>
         </div>
 
-        {/* UV Index Scale Reference */}
-        <div className="mt-8 bg-gradient-to-r from-green-50 via-yellow-50 to-red-50 dark:from-gray-800 dark:via-gray-800 dark:to-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 max-w-4xl w-full">
-          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">📏 {t("latest.uvIndexScale")}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
-            <div className="text-center p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-              <div className="font-bold text-green-700 dark:text-green-400">0-2</div>
-              <div className="text-green-600 dark:text-green-500">{t("latest.low")}</div>
-            </div>
-            <div className="text-center p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
-              <div className="font-bold text-yellow-700 dark:text-yellow-400">3-5</div>
-              <div className="text-yellow-600 dark:text-yellow-500">{t("latest.moderate")}</div>
-            </div>
-            <div className="text-center p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
-              <div className="font-bold text-orange-700 dark:text-orange-400">6-7</div>
-              <div className="text-orange-600 dark:text-orange-500">{t("latest.high")}</div>
-            </div>
-            <div className="text-center p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
-              <div className="font-bold text-red-700 dark:text-red-400">8-10</div>
-              <div className="text-red-600 dark:text-red-500">{t("latest.veryHigh")}</div>
-            </div>
-            <div className="text-center p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-              <div className="font-bold text-purple-700 dark:text-purple-400">11+</div>
-              <div className="text-purple-600 dark:text-purple-500">{t("latest.extreme")}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Safety Information */}
-        <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-2xl p-6 max-w-4xl w-full">
-          <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-400 mb-3">
-            🛡️ {t("latest.uvProtectionGuide")}
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-700 dark:text-blue-300">
-            <div className="flex items-start">
-              <span className="text-lg mr-2">☀️</span>
-              <span>{t("latest.wearSunscreen")}</span>
-            </div>
-            <div className="flex items-start">
-              <span className="text-lg mr-2">👒</span>
-              <span>{t("latest.wearHat")}</span>
-            </div>
-            <div className="flex items-start">
-              <span className="text-lg mr-2">🕶️</span>
-              <span>{t("latest.wearSunglasses")}</span>
-            </div>
-            <div className="flex items-start">
-              <span className="text-lg mr-2">⏰</span>
-              <span>{t("latest.avoidPeakHours")}</span>
-            </div>
-            <div className="flex items-start">
-              <span className="text-lg mr-2">🌳</span>
-              <span>{t("latest.seekShade")}</span>
-            </div>
-            <div className="flex items-start">
-              <span className="text-lg mr-2">👕</span>
-              <span>{t("latest.wearProtectiveClothing")}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Refresh Button */}
-        <div className="mt-6">
-          <button
-            onClick={fetchLatestData}
-            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg transition-colors flex items-center"
-          >
-            <span className="mr-2">🔄</span>
-            {t("common.refresh")}
-          </button>
-        </div>
-
         {/* UV Analytics Chart */}
         <div className="mt-8 w-full max-w-4xl opacity-50">
           <UVAnalyticsChart />
@@ -351,130 +278,6 @@ export default function Latest() {
             </div>
           </div>
         </div>
-
-        {latest && (
-          <div className="mt-6 w-full max-w-4xl bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-6 shadow-lg border border-orange-200 dark:border-gray-700">
-            <h3 className="text-lg md:text-xl font-semibold text-orange-700 dark:text-orange-400 mb-4">
-              📋 {t("latest.detailedAnalysis") || "Detailed UV Analysis"}
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Risk Level Card */}
-              <div className={`p-4 rounded-lg ${detailedUVInfo.bgColor} border-l-4 ${detailedUVInfo.borderColor}`}>
-                <h4 className="font-semibold text-sm mb-2 dark:text-gray-200">⚠️ Risk Level</h4>
-                <p className={`text-2xl font-bold ${detailedUVInfo.textColor}`}>{detailedUVInfo.level}</p>
-                <p className="text-sm mt-2 dark:text-gray-300">{detailedUVInfo.risk}</p>
-              </div>
-
-              {/* Burn Time Card */}
-              <div className="p-4 rounded-lg bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500">
-                <h4 className="font-semibold text-sm mb-2 dark:text-gray-200">⏱️ Burn Time</h4>
-                <p className="text-2xl font-bold text-orange-600 dark:text-orange-400">{detailedUVInfo.burnTime}</p>
-                <p className="text-xs mt-2 text-gray-600 dark:text-gray-400">Time to skin damage without protection</p>
-              </div>
-            </div>
-
-            {/* Recommendations */}
-            <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-700">
-              <h4 className="font-semibold text-sm mb-3 text-blue-800 dark:text-blue-400">🛡️ Safety Recommendations</h4>
-              <ul className="space-y-2 text-sm text-blue-700 dark:text-blue-300">
-                {detailedUVInfo.recommendations.map((rec, index) => (
-                  <li key={index} className="flex items-start">
-                    <span className="mr-2">•</span>
-                    <span>{rec}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {/* UV Index Scale Reference */}
-      <div className="mt-8 bg-gradient-to-r from-green-50 via-yellow-50 to-red-50 dark:from-gray-800 dark:via-gray-800 dark:to-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl p-6 max-w-4xl w-full">
-        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">📏 {t("latest.uvIndexScale")}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-2 text-xs">
-          <div className="text-center p-2 bg-green-100 dark:bg-green-900/30 rounded-lg">
-            <div className="font-bold text-green-700 dark:text-green-400">0-2</div>
-            <div className="text-green-600 dark:text-green-500">{t("latest.low")}</div>
-          </div>
-          <div className="text-center p-2 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg">
-            <div className="font-bold text-yellow-700 dark:text-yellow-400">3-5</div>
-            <div className="text-yellow-600 dark:text-yellow-500">{t("latest.moderate")}</div>
-          </div>
-          <div className="text-center p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg">
-            <div className="font-bold text-orange-700 dark:text-orange-400">6-7</div>
-            <div className="text-orange-600 dark:text-orange-500">{t("latest.high")}</div>
-          </div>
-          <div className="text-center p-2 bg-red-100 dark:bg-red-900/30 rounded-lg">
-            <div className="font-bold text-red-700 dark:text-red-400">8-10</div>
-            <div className="text-red-600 dark:text-red-500">{t("latest.veryHigh")}</div>
-          </div>
-          <div className="text-center p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
-            <div className="font-bold text-purple-700 dark:text-purple-400">11+</div>
-            <div className="text-purple-600 dark:text-purple-500">{t("latest.extreme")}</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Safety Information */}
-      <div className="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-2xl p-6 max-w-4xl w-full">
-        <h3 className="text-lg font-semibold text-blue-800 dark:text-blue-400 mb-3">
-          🛡️ {t("latest.uvProtectionGuide")}
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-blue-700 dark:text-blue-300">
-          <div className="flex items-start">
-            <span className="text-lg mr-2">☀️</span>
-            <span>{t("latest.wearSunscreen")}</span>
-          </div>
-          <div className="flex items-start">
-            <span className="text-lg mr-2">👒</span>
-            <span>{t("latest.wearHat")}</span>
-          </div>
-          <div className="flex items-start">
-            <span className="text-lg mr-2">🕶️</span>
-            <span>{t("latest.wearSunglasses")}</span>
-          </div>
-          <div className="flex items-start">
-            <span className="text-lg mr-2">⏰</span>
-            <span>{t("latest.avoidPeakHours")}</span>
-          </div>
-          <div className="flex items-start">
-            <span className="text-lg mr-2">🌳</span>
-            <span>{t("latest.seekShade")}</span>
-          </div>
-          <div className="flex items-start">
-            <span className="text-lg mr-2">👕</span>
-            <span>{t("latest.wearProtectiveClothing")}</span>
-          </div>
-        </div>
-
-        {/* Current UV Level Specific Advice */}
-        <div className={`mt-4 p-3 rounded-lg ${uvLevelInfo.bgColor} border-l-4 ${uvLevelInfo.borderColor}`}>
-          <h4 className="font-semibold mb-1 dark:text-gray-200">{t("latest.currentRecommendation")}</h4>
-          <p className="text-sm dark:text-gray-300">
-            {uvValue <= 2
-              ? t("latest.lowAdvice")
-              : uvValue <= 5
-                ? t("latest.moderateAdvice")
-                : uvValue <= 7
-                  ? t("latest.highAdvice")
-                  : uvValue <= 10
-                    ? t("latest.veryHighAdvice")
-                    : t("latest.extremeAdvice")}
-          </p>
-        </div>
-      </div>
-
-      {/* Refresh Button */}
-      <div className="mt-6">
-        <button
-          onClick={fetchLatestData}
-          className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg transition-colors flex items-center"
-        >
-          <span className="mr-2">🔄</span>
-          {t("common.refresh")}
-        </button>
       </div>
 
       {/* UV Analytics Chart */}
