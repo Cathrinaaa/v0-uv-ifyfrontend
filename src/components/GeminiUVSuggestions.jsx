@@ -10,6 +10,7 @@ export default function GeminiUVSuggestions() {
   const [suggestions, setSuggestions] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [hasData, setHasData] = useState(false)
 
   const calculateAccumulation = () => {
     const stats = getStats()
@@ -32,6 +33,7 @@ export default function GeminiUVSuggestions() {
       monthAccumulated: Number.parseFloat(monthAccumulated.toFixed(1)),
       currentUV: stats.currentReading || 0,
       todaysPeak: stats.todaysPeak || 0,
+      totalReadings: stats.totalReadings || 0,
     }
   }
 
@@ -41,6 +43,15 @@ export default function GeminiUVSuggestions() {
 
     try {
       const accumulation = calculateAccumulation()
+
+      if (accumulation.totalReadings === 0) {
+        setHasData(false)
+        setError("No UV data available yet. Please wait for readings from your device.")
+        setLoading(false)
+        return
+      }
+
+      setHasData(true)
 
       const response = await fetch("/api/gemini", {
         method: "POST",
@@ -54,6 +65,7 @@ export default function GeminiUVSuggestions() {
             todayAccumulated: accumulation.todayAccumulated,
             weekAccumulated: accumulation.weekAccumulated,
             monthAccumulated: accumulation.monthAccumulated,
+            totalReadings: accumulation.totalReadings,
             timestamp: new Date().toISOString(),
           },
         }),
@@ -68,7 +80,9 @@ export default function GeminiUVSuggestions() {
       setSuggestions(suggestionText)
     } catch (err) {
       console.error("Error fetching Gemini suggestions:", err)
-      setError("Failed to load AI suggestions. Please try again.")
+      setError(
+        "Unable to generate AI suggestions at the moment. This may be due to network issues. Your UV data is still being tracked locally.",
+      )
     } finally {
       setLoading(false)
     }
@@ -112,6 +126,14 @@ export default function GeminiUVSuggestions() {
           <div className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap text-sm leading-relaxed">
             {suggestions}
           </div>
+        </div>
+      )}
+
+      {!loading && !suggestions && !error && !hasData && (
+        <div className="text-center py-8">
+          <p className="text-gray-600 dark:text-gray-400">
+            Waiting for UV readings to generate personalized recommendations...
+          </p>
         </div>
       )}
     </div>
