@@ -5,6 +5,7 @@ import { useEffect, useState } from "react"
 import UVGauge from "../components/UVGauge"
 import UVAnalyticsChart from "../components/UVAnalyticsChart"
 import UVAccumulationAnalytics from "../components/UVAccumulationAnalytics"
+import GeminiUVSuggestions from "../components/GeminiUVSuggestions"
 import { useLanguage } from "../contexts/LanguageContext"
 
 export default function Latest() {
@@ -292,6 +293,11 @@ export default function Latest() {
       {/* UV Accumulation Analytics */}
       <div className="mt-8 w-full max-w-4xl">
         <UVAccumulationAnalytics />
+      </div>
+
+      {/* Gemini AI Suggestions */}
+      <div className="mt-8 w-full max-w-4xl">
+        <GeminiUVSuggestions />
       </div>
     </div>
   )

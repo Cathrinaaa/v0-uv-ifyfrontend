@@ -172,6 +172,48 @@ export default function DashboardHome() {
         ))}
       </div>
 
+      {/* UV Index Information Section */}
+      <div className="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-blue-200 dark:border-blue-700 shadow-lg">
+        <h2 className="text-lg sm:text-xl font-bold text-blue-700 dark:text-blue-400 mb-4 flex items-center gap-2">
+          <span>ℹ️</span>
+          Understanding UV Index
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4">
+            <h3 className="font-semibold text-blue-700 dark:text-blue-400 text-sm sm:text-base mb-2">
+              What is UV Index?
+            </h3>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              The UV Index measures the strength of ultraviolet radiation from the sun on a scale of 0-11+. Higher
+              values indicate stronger UV radiation and greater risk of skin damage.
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4">
+            <h3 className="font-semibold text-blue-700 dark:text-blue-400 text-sm sm:text-base mb-2">Why It Matters</h3>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              Prolonged UV exposure increases the risk of skin cancer, cataracts, and immune system suppression.
+              Monitoring UV levels helps you take appropriate protective measures.
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4">
+            <h3 className="font-semibold text-blue-700 dark:text-blue-400 text-sm sm:text-base mb-2">Peak Hours</h3>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              UV radiation is strongest between 10 AM and 4 PM. During these hours, take extra precautions like wearing
+              sunscreen, protective clothing, and seeking shade.
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4">
+            <h3 className="font-semibold text-blue-700 dark:text-blue-400 text-sm sm:text-base mb-2">
+              Daily Protection
+            </h3>
+            <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+              Apply SPF 30+ sunscreen daily, reapply every 2 hours, wear UV-blocking sunglasses, and consider protective
+              clothing for extended outdoor activities.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Analytics */}
       <div>
         <h2 className="text-xl sm:text-2xl font-bold text-orange-700 dark:text-orange-400 mb-3 sm:mb-4 flex items-center gap-2">
