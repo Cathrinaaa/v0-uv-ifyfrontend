@@ -199,6 +199,10 @@ export default function Latest() {
         <div className="mt-8 w-full max-w-4xl opacity-50">
           <UVAnalyticsChart />
         </div>
+
+        <div className="mt-8 w-full max-w-4xl">
+          <UVAccumulationAnalytics />
+        </div>
       </div>
     )
   }
