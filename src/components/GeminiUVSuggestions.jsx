@@ -42,29 +42,21 @@ export default function GeminiUVSuggestions() {
     try {
       const accumulation = calculateAccumulation()
 
-      const prompt = `Based on the following UV exposure data, provide personalized health recommendations:
-      
-Current UV Index: ${accumulation.currentUV}
-Today's Peak UV: ${accumulation.todaysPeak}
-Today's Accumulated UV: ${accumulation.todayAccumulated}
-This Week's Accumulated UV: ${accumulation.weekAccumulated}
-This Month's Accumulated UV: ${accumulation.monthAccumulated}
-
-Please provide:
-1. Assessment of current UV exposure level
-2. Specific recommendations for sun protection
-3. Suggested activities based on UV levels
-4. Health tips for skin protection
-5. When to avoid outdoor activities
-
-Keep the response concise and actionable.`
-
-      const response = await fetch("/api/gemini-suggestions", {
+      const response = await fetch("/api/gemini", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({
+          uvData: {
+            currentUV: accumulation.currentUV,
+            todaysPeak: accumulation.todaysPeak,
+            todayAccumulated: accumulation.todayAccumulated,
+            weekAccumulated: accumulation.weekAccumulated,
+            monthAccumulated: accumulation.monthAccumulated,
+            timestamp: new Date().toISOString(),
+          },
+        }),
       })
 
       if (!response.ok) {
@@ -72,7 +64,8 @@ Keep the response concise and actionable.`
       }
 
       const data = await response.json()
-      setSuggestions(data.suggestions)
+      const suggestionText = data.candidates?.[0]?.content?.parts?.[0]?.text || "No suggestions available"
+      setSuggestions(suggestionText)
     } catch (err) {
       console.error("Error fetching Gemini suggestions:", err)
       setError("Failed to load AI suggestions. Please try again.")
