@@ -12,84 +12,86 @@ export default function GeminiUVSuggestions() {
   const [error, setError] = useState(null)
   const [accumulation, setAccumulation] = useState(null)
 
-  const calculateAccumulation = () => {
+  const calculateTodayAccumulation = () => {
     const stats = getStats()
-    const now = new Date()
-    const lastMonth = new Date(now)
-    lastMonth.setDate(now.getDate() - 30)
-
     const todayAccumulated = stats.todaysReadings.reduce((sum, item) => sum + Number.parseFloat(item.uvi || 0), 0)
-    const weekAccumulated = stats.weekReadings.reduce((sum, item) => sum + Number.parseFloat(item.uvi || 0), 0)
-    const monthReadings =
-      stats.history?.filter((item) => {
-        const itemDate = new Date(item.date)
-        return itemDate >= lastMonth && itemDate <= now
-      }) || []
-    const monthAccumulated = monthReadings.reduce((sum, item) => sum + Number.parseFloat(item.uvi || 0), 0)
-
-    return {
-      todayAccumulated: Number.parseFloat(todayAccumulated.toFixed(2)),
-      weekAccumulated: Number.parseFloat(weekAccumulated.toFixed(2)),
-      monthAccumulated: Number.parseFloat(monthAccumulated.toFixed(2)),
-    }
+    return Number.parseFloat(todayAccumulated.toFixed(2))
   }
 
   const fetchGeminiSuggestions = async () => {
     setLoading(true)
     setError(null)
+    setSuggestions(null)
 
     try {
-      const uvAccumulation = calculateAccumulation()
-      console.log("[v0] UV Accumulation data:", uvAccumulation)
-      setAccumulation(uvAccumulation)
+      const todayUV = calculateTodayAccumulation()
+      console.log("[v0] Today's accumulated UV:", todayUV)
+      setAccumulation(todayUV)
+
+      const requestPayload = {
+        uvData: {
+          today: todayUV,
+        },
+      }
+      console.log("[v0] Sending request payload:", JSON.stringify(requestPayload))
 
       const response = await fetch("https://uvify-backend.onrender.com/api/gemini", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          uvData: {
-            uvAccumulation: {
-              today: uvAccumulation.todayAccumulated,
-            },
-          },
-        }),
+        body: JSON.stringify(requestPayload),
       })
 
-      console.log("[v0] API response status:", response.status)
+      console.log("[v0] Response status:", response.status)
+      console.log("[v0] Response headers:", {
+        contentType: response.headers.get("content-type"),
+      })
 
       if (!response.ok) {
-        const errorData = await response.text()
-        console.error("[v0] API error response:", errorData)
-        throw new Error(`API error: ${response.status} - ${errorData}`)
+        const errorText = await response.text()
+        console.error("[v0] Error response:", errorText)
+        throw new Error(`HTTP ${response.status}: ${errorText}`)
       }
 
       const data = await response.json()
-      console.log("[v0] Full API response:", JSON.stringify(data, null, 2))
+      console.log("[v0] Raw response data:", data)
+      console.log("[v0] Response type:", typeof data)
+      console.log("[v0] Response keys:", Object.keys(data))
 
       let suggestionText = null
 
-      if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
-        suggestionText = data.candidates[0].content.parts[0].text
+      if (data.suggestion) {
+        suggestionText = data.suggestion
+        console.log("[v0] Extracted from data.suggestion")
+      } else if (data.response) {
+        suggestionText = data.response
+        console.log("[v0] Extracted from data.response")
       } else if (data.text) {
         suggestionText = data.text
-      } else if (data.suggestion) {
-        suggestionText = data.suggestion
-      } else if (typeof data === "string") {
-        suggestionText = data
+        console.log("[v0] Extracted from data.text")
       } else if (data.message) {
         suggestionText = data.message
+        console.log("[v0] Extracted from data.message")
+      } else if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+        suggestionText = data.candidates[0].content.parts[0].text
+        console.log("[v0] Extracted from Gemini candidates structure")
+      } else if (typeof data === "string") {
+        suggestionText = data
+        console.log("[v0] Response is a string")
+      } else {
+        console.error("[v0] Could not find suggestion in any expected field")
+        throw new Error("Unexpected response format - no suggestion field found")
       }
 
-      if (!suggestionText) {
-        console.error("[v0] Could not extract suggestion from response:", data)
-        throw new Error("Invalid response format from API")
+      if (!suggestionText || suggestionText.trim() === "") {
+        throw new Error("Received empty suggestion from API")
       }
 
+      console.log("[v0] Final suggestion text:", suggestionText)
       setSuggestions(suggestionText)
     } catch (err) {
-      console.error("[v0] Error fetching Gemini suggestions:", err.message)
+      console.error("[v0] Complete error:", err)
       setError(
         "Unable to generate AI suggestions at the moment. This may be due to network issues. Your UV data is still being tracked locally.",
       )
@@ -118,20 +120,10 @@ export default function GeminiUVSuggestions() {
         </button>
       </div>
 
-      {accumulation && (
-        <div className="grid grid-cols-3 gap-3 mb-4 p-3 bg-white dark:bg-gray-800 rounded-lg">
-          <div className="text-center">
-            <p className="text-xs text-gray-600 dark:text-gray-400">Today</p>
-            <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">{accumulation.todayAccumulated}</p>
-          </div>
-          <div className="text-center">
-            <p className="text-xs text-gray-600 dark:text-gray-400">This Week</p>
-            <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">{accumulation.weekAccumulated}</p>
-          </div>
-          <div className="text-center">
-            <p className="text-xs text-gray-600 dark:text-gray-400">This Month</p>
-            <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">{accumulation.monthAccumulated}</p>
-          </div>
+      {accumulation !== null && (
+        <div className="mb-4 p-3 bg-white dark:bg-gray-800 rounded-lg border border-blue-200 dark:border-blue-700">
+          <p className="text-sm text-gray-600 dark:text-gray-400">Today's UV Accumulation</p>
+          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{accumulation} UV Index Points</p>
         </div>
       )}
 
@@ -149,7 +141,7 @@ export default function GeminiUVSuggestions() {
       )}
 
       {suggestions && !loading && (
-        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border border-blue-200 dark:border-blue-700">
           <div className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">
             {suggestions}
           </div>
