@@ -10,7 +10,7 @@ export default function GeminiUVSuggestions() {
   const [suggestions, setSuggestions] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-  const [hasData, setHasData] = useState(false)
+  const [accumulation, setAccumulation] = useState(null)
 
   const calculateAccumulation = () => {
     const stats = getStats()
@@ -28,12 +28,9 @@ export default function GeminiUVSuggestions() {
     const monthAccumulated = monthReadings.reduce((sum, item) => sum + Number.parseFloat(item.uvi || 0), 0)
 
     return {
-      todayAccumulated: Number.parseFloat(todayAccumulated.toFixed(1)),
-      weekAccumulated: Number.parseFloat(weekAccumulated.toFixed(1)),
-      monthAccumulated: Number.parseFloat(monthAccumulated.toFixed(1)),
-      currentUV: stats.currentReading || 0,
-      todaysPeak: stats.todaysPeak || 0,
-      totalReadings: stats.totalReadings || 0,
+      todayAccumulated: Number.parseFloat(todayAccumulated.toFixed(2)),
+      weekAccumulated: Number.parseFloat(weekAccumulated.toFixed(2)),
+      monthAccumulated: Number.parseFloat(monthAccumulated.toFixed(2)),
     }
   }
 
@@ -42,17 +39,9 @@ export default function GeminiUVSuggestions() {
     setError(null)
 
     try {
-      const accumulation = calculateAccumulation()
-      console.log("[v0] UV Accumulation data:", accumulation)
-
-      if (accumulation.totalReadings === 0) {
-        setHasData(false)
-        setError("No UV data available yet. Please wait for readings from your device.")
-        setLoading(false)
-        return
-      }
-
-      setHasData(true)
+      const uvAccumulation = calculateAccumulation()
+      console.log("[v0] UV Accumulation data:", uvAccumulation)
+      setAccumulation(uvAccumulation)
 
       const response = await fetch("https://uvify-backend.onrender.com/api/gemini", {
         method: "POST",
@@ -61,13 +50,11 @@ export default function GeminiUVSuggestions() {
         },
         body: JSON.stringify({
           uvData: {
-            currentUV: accumulation.currentUV,
-            todaysPeak: accumulation.todaysPeak,
-            todayAccumulated: accumulation.todayAccumulated,
-            weekAccumulated: accumulation.weekAccumulated,
-            monthAccumulated: accumulation.monthAccumulated,
-            totalReadings: accumulation.totalReadings,
-            timestamp: new Date().toISOString(),
+            uvAccumulation: {
+              today: uvAccumulation.todayAccumulated,
+              week: uvAccumulation.weekAccumulated,
+              month: uvAccumulation.monthAccumulated,
+            },
           },
         }),
       })
@@ -115,6 +102,23 @@ export default function GeminiUVSuggestions() {
         </button>
       </div>
 
+      {accumulation && (
+        <div className="grid grid-cols-3 gap-3 mb-4 p-3 bg-white dark:bg-gray-800 rounded-lg">
+          <div className="text-center">
+            <p className="text-xs text-gray-600 dark:text-gray-400">Today</p>
+            <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">{accumulation.todayAccumulated}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-xs text-gray-600 dark:text-gray-400">This Week</p>
+            <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">{accumulation.weekAccumulated}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-xs text-gray-600 dark:text-gray-400">This Month</p>
+            <p className="text-lg font-semibold text-blue-600 dark:text-blue-400">{accumulation.monthAccumulated}</p>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div className="bg-red-100 dark:bg-red-900/20 border border-red-400 dark:border-red-600 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg mb-4">
           {error}
@@ -129,14 +133,14 @@ export default function GeminiUVSuggestions() {
       )}
 
       {suggestions && !loading && (
-        <div className="prose prose-sm dark:prose-invert max-w-none">
-          <div className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap text-sm leading-relaxed">
+        <div className="bg-white dark:bg-gray-800 p-4 rounded-lg">
+          <div className="text-gray-700 dark:text-gray-300 text-sm leading-relaxed whitespace-pre-wrap">
             {suggestions}
           </div>
         </div>
       )}
 
-      {!loading && !suggestions && !error && !hasData && (
+      {!loading && !suggestions && !error && (
         <div className="text-center py-8">
           <p className="text-gray-600 dark:text-gray-400">
             Waiting for UV readings to generate personalized recommendations...
