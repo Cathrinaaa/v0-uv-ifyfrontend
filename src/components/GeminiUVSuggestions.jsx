@@ -43,6 +43,7 @@ export default function GeminiUVSuggestions() {
 
     try {
       const accumulation = calculateAccumulation()
+      console.log("[v0] UV Accumulation data:", accumulation)
 
       if (accumulation.totalReadings === 0) {
         setHasData(false)
@@ -53,7 +54,7 @@ export default function GeminiUVSuggestions() {
 
       setHasData(true)
 
-      const response = await fetch("/api/gemini", {
+      const response = await fetch("https://uvify-backend.onrender.com/api/gemini", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -71,15 +72,21 @@ export default function GeminiUVSuggestions() {
         }),
       })
 
+      console.log("[v0] API response status:", response.status)
+
       if (!response.ok) {
-        throw new Error("Failed to fetch suggestions")
+        const errorData = await response.text()
+        console.error("[v0] API error response:", errorData)
+        throw new Error(`API error: ${response.status}`)
       }
 
       const data = await response.json()
-      const suggestionText = data.candidates?.[0]?.content?.parts?.[0]?.text || "No suggestions available"
+      console.log("[v0] API response data:", data)
+
+      const suggestionText = data.candidates?.[0]?.content?.parts?.[0]?.text || data.text || "No suggestions available"
       setSuggestions(suggestionText)
     } catch (err) {
-      console.error("Error fetching Gemini suggestions:", err)
+      console.error("[v0] Error fetching Gemini suggestions:", err)
       setError(
         "Unable to generate AI suggestions at the moment. This may be due to network issues. Your UV data is still being tracked locally.",
       )
