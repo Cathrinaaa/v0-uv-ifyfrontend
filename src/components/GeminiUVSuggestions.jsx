@@ -69,7 +69,7 @@ export default function GeminiUVSuggestions() {
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-semibold text-blue-700 dark:text-blue-400 flex items-center gap-2">
           <span>🤖</span>
-          {t("suggestions.aiRecommendations") || "AI-Powered UV Recommendations"}
+          {t("Recommendations") || "AI-Powered UV Recommendations"}
         </h2>
         <button
           onClick={fetchGeminiSuggestions}
