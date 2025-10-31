@@ -48,39 +48,38 @@ export default function GeminiUVSuggestions() {
         contentType: response.headers.get("content-type"),
       })
 
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error("[v0] Error response:", errorText)
-        throw new Error(`HTTP ${response.status}: ${errorText}`)
-      }
-
       const data = await response.json()
-      console.log("[v0] Raw response data:", data)
-      console.log("[v0] Response type:", typeof data)
-      console.log("[v0] Response keys:", Object.keys(data))
+      console.log("[v0] Full API response object:", data)
+      console.log("[v0] Response stringified:", JSON.stringify(data, null, 2))
+
+      if (!response.ok) {
+        console.error("[v0] Error response received:", data)
+        throw new Error(`HTTP ${response.status}: ${JSON.stringify(data)}`)
+      }
 
       let suggestionText = null
 
       if (data.suggestion) {
         suggestionText = data.suggestion
-        console.log("[v0] Extracted from data.suggestion")
+        console.log("[v0] Extracted from data.suggestion:", suggestionText)
       } else if (data.response) {
         suggestionText = data.response
-        console.log("[v0] Extracted from data.response")
+        console.log("[v0] Extracted from data.response:", suggestionText)
       } else if (data.text) {
         suggestionText = data.text
-        console.log("[v0] Extracted from data.text")
+        console.log("[v0] Extracted from data.text:", suggestionText)
       } else if (data.message) {
         suggestionText = data.message
-        console.log("[v0] Extracted from data.message")
+        console.log("[v0] Extracted from data.message:", suggestionText)
       } else if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
         suggestionText = data.candidates[0].content.parts[0].text
-        console.log("[v0] Extracted from Gemini candidates structure")
+        console.log("[v0] Extracted from Gemini candidates structure:", suggestionText)
       } else if (typeof data === "string") {
         suggestionText = data
-        console.log("[v0] Response is a string")
+        console.log("[v0] Response is a string:", suggestionText)
       } else {
-        console.error("[v0] Could not find suggestion in any expected field")
+        console.error("[v0] Response structure keys:", Object.keys(data))
+        console.error("[v0] Full data for inspection:", JSON.stringify(data, null, 2))
         throw new Error("Unexpected response format - no suggestion field found")
       }
 
@@ -92,6 +91,7 @@ export default function GeminiUVSuggestions() {
       setSuggestions(suggestionText)
     } catch (err) {
       console.error("[v0] Complete error:", err)
+      console.error("[v0] Error message:", err.message)
       setError(
         "Unable to generate AI suggestions at the moment. This may be due to network issues. Your UV data is still being tracked locally.",
       )
