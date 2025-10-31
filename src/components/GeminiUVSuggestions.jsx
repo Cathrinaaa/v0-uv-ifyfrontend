@@ -52,8 +52,6 @@ export default function GeminiUVSuggestions() {
           uvData: {
             uvAccumulation: {
               today: uvAccumulation.todayAccumulated,
-              week: uvAccumulation.weekAccumulated,
-              month: uvAccumulation.monthAccumulated,
             },
           },
         }),
@@ -64,16 +62,34 @@ export default function GeminiUVSuggestions() {
       if (!response.ok) {
         const errorData = await response.text()
         console.error("[v0] API error response:", errorData)
-        throw new Error(`API error: ${response.status}`)
+        throw new Error(`API error: ${response.status} - ${errorData}`)
       }
 
       const data = await response.json()
-      console.log("[v0] API response data:", data)
+      console.log("[v0] Full API response:", JSON.stringify(data, null, 2))
 
-      const suggestionText = data.candidates?.[0]?.content?.parts?.[0]?.text || data.text || "No suggestions available"
+      let suggestionText = null
+
+      if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
+        suggestionText = data.candidates[0].content.parts[0].text
+      } else if (data.text) {
+        suggestionText = data.text
+      } else if (data.suggestion) {
+        suggestionText = data.suggestion
+      } else if (typeof data === "string") {
+        suggestionText = data
+      } else if (data.message) {
+        suggestionText = data.message
+      }
+
+      if (!suggestionText) {
+        console.error("[v0] Could not extract suggestion from response:", data)
+        throw new Error("Invalid response format from API")
+      }
+
       setSuggestions(suggestionText)
     } catch (err) {
-      console.error("[v0] Error fetching Gemini suggestions:", err)
+      console.error("[v0] Error fetching Gemini suggestions:", err.message)
       setError(
         "Unable to generate AI suggestions at the moment. This may be due to network issues. Your UV data is still being tracked locally.",
       )
