@@ -57,31 +57,7 @@ export default function GeminiUVSuggestions() {
         throw new Error(`HTTP ${response.status}: ${JSON.stringify(data)}`)
       }
 
-      let suggestionText = null
-
-      if (data.suggestion) {
-        suggestionText = data.suggestion
-        console.log("[v0] Extracted from data.suggestion:", suggestionText)
-      } else if (data.response) {
-        suggestionText = data.response
-        console.log("[v0] Extracted from data.response:", suggestionText)
-      } else if (data.text) {
-        suggestionText = data.text
-        console.log("[v0] Extracted from data.text:", suggestionText)
-      } else if (data.message) {
-        suggestionText = data.message
-        console.log("[v0] Extracted from data.message:", suggestionText)
-      } else if (data.candidates?.[0]?.content?.parts?.[0]?.text) {
-        suggestionText = data.candidates[0].content.parts[0].text
-        console.log("[v0] Extracted from Gemini candidates structure:", suggestionText)
-      } else if (typeof data === "string") {
-        suggestionText = data
-        console.log("[v0] Response is a string:", suggestionText)
-      } else {
-        console.error("[v0] Response structure keys:", Object.keys(data))
-        console.error("[v0] Full data for inspection:", JSON.stringify(data, null, 2))
-        throw new Error("Unexpected response format - no suggestion field found")
-      }
+      const suggestionText = data.candidates?.[0]?.content?.parts?.[0]?.text
 
       if (!suggestionText || suggestionText.trim() === "") {
         throw new Error("Received empty suggestion from API")
