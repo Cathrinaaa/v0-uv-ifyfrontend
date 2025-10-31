@@ -2,6 +2,7 @@
 
 import { useLanguage } from "../contexts/LanguageContext"
 import { useUVData } from "../contexts/UVDataContext"
+import GeminiUVSuggestions from "../components/GeminiUVSuggestions"
 
 export default function DashboardHome() {
   const { t } = useLanguage()
@@ -311,6 +312,11 @@ export default function DashboardHome() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Gemini AI Suggestions section */}
+      <div className="w-full">
+        <GeminiUVSuggestions />
       </div>
     </div>
   )
