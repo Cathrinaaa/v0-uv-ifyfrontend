@@ -45,7 +45,6 @@ export default function Dashboard() {
     { name: t("nav.home"), href: "/dashboard", icon: "🏠" },
     { name: t("nav.latest"), href: "/dashboard/latest", icon: "📊" },
     { name: t("nav.history"), href: "/dashboard/history", icon: "🕒" },
-    { name: t("nav.settings"), href: "/dashboard/settings", icon: "⚙️" },
   ]
 
   const isActive = (path) => {
@@ -136,6 +135,21 @@ export default function Dashboard() {
                     >
                       <span className="mr-2 text-lg">👤</span> {t("nav.profile")}
                     </Link>
+
+                    <div className="px-4 py-3 border-t border-b border-orange-100 dark:border-gray-700">
+                      <p className="text-xs md:text-sm text-orange-600 dark:text-orange-500 font-medium mb-2">
+                        {t("settings.language")}
+                      </p>
+                      <select
+                        value={language}
+                        onChange={(e) => changeLanguage(e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg text-sm font-medium bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-orange-300 dark:border-gray-600 focus:border-orange-500 dark:focus:border-orange-400 focus:outline-none transition-colors duration-200 cursor-pointer"
+                      >
+                        <option value="en">🇺🇸 {t("settings.english")}</option>
+                        <option value="tl">🇵🇭 {t("settings.tagalog")}</option>
+                        <option value="ilo">🇵🇭 {t("settings.ilocano")}</option>
+                      </select>
+                    </div>
 
                     <button
                       onClick={handleLogout}

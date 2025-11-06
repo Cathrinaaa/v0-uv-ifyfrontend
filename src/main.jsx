@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import Dashboard from "./pages/Dashboard"
 import Latest from "./pages/Latest" // ✅ NEW: reverted from Analytics back to Latest
 import History from "./pages/History"
-import Settings from "./pages/Settings"
+// import Settings from "./pages/Settings" // removed Settings import
 import Login from "./pages/Login"
 import DashboardHome from "./pages/DashboardHome" // ✅ NEW: import DashboardHome
 import "./index.css"
@@ -110,7 +110,6 @@ const App = () => {
         {/* ✅ NEW: reverted from analytics back to latest */}
         <Route path="latest" element={<Latest />} />
         <Route path="history" element={<History />} />
-        <Route path="settings" element={<Settings />} />
         <Route path="profile" element={<Profile />} />
       </Route>
 
