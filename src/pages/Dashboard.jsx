@@ -137,18 +137,35 @@ export default function Dashboard() {
                     </Link>
 
                     <div className="px-4 py-3 border-t border-b border-orange-100 dark:border-gray-700">
-                      <p className="text-xs md:text-sm text-orange-600 dark:text-orange-500 font-medium mb-2">
+                      <p className="text-xs md:text-sm text-orange-600 dark:text-orange-500 font-medium mb-3">
                         {t("settings.language")}
                       </p>
-                      <select
-                        value={language}
-                        onChange={(e) => changeLanguage(e.target.value)}
-                        className="w-full px-3 py-2 rounded-lg text-sm font-medium bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-orange-300 dark:border-gray-600 focus:border-orange-500 dark:focus:border-orange-400 focus:outline-none transition-colors duration-200 cursor-pointer"
-                      >
-                        <option value="en">🇺🇸 {t("settings.english")}</option>
-                        <option value="tl">🇵🇭 {t("settings.tagalog")}</option>
-                        <option value="ilo">🇵🇭 {t("settings.ilocano")}</option>
-                      </select>
+                      <div className="grid grid-cols-1 gap-2">
+                        {[
+                          { code: "en", flag: "🇺🇸", label: t("settings.english") },
+                          { code: "tl", flag: "🇵🇭", label: t("settings.tagalog") },
+                          { code: "ilo", flag: "🇵🇭", label: t("settings.ilocano") },
+                        ].map((lang) => (
+                          <button
+                            key={lang.code}
+                            onClick={() => {
+                              changeLanguage(lang.code)
+                              setIsDropdownOpen(false)
+                            }}
+                            className={`flex items-center justify-between px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200 ${
+                              language === lang.code
+                                ? "bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-orange-900/40 dark:to-yellow-900/40 text-orange-700 dark:text-orange-400 border-2 border-orange-400 dark:border-orange-500"
+                                : "bg-orange-50 dark:bg-gray-700 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-gray-600 hover:bg-orange-100 dark:hover:bg-gray-600"
+                            }`}
+                          >
+                            <span className="flex items-center">
+                              <span className="text-lg mr-2">{lang.flag}</span>
+                              {lang.label}
+                            </span>
+                            {language === lang.code && <span className="text-lg">✓</span>}
+                          </button>
+                        ))}
+                      </div>
                     </div>
 
                     <button
@@ -166,21 +183,23 @@ export default function Dashboard() {
       </header>
 
       <nav className="fixed bottom-0 left-0 w-full bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border-t border-orange-200 dark:border-gray-700 shadow-lg z-50 md:hidden transition-colors duration-300">
-        <div className="grid grid-cols-4 gap-1 px-2 py-2">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              to={item.href}
-              className={`flex flex-col items-center justify-center py-2 px-1 rounded-lg transition-all duration-300 min-h-[60px] ${
-                isActive(item.href)
-                  ? "bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-orange-900/40 dark:to-yellow-900/40 text-orange-700 dark:text-orange-400 shadow-md"
-                  : "text-orange-600 dark:text-orange-400 hover:bg-orange-50/80 dark:hover:bg-gray-700/50"
-              }`}
-            >
-              <span className="text-2xl mb-1">{item.icon}</span>
-              <span className="text-xs font-medium">{item.name}</span>
-            </Link>
-          ))}
+        <div className="flex justify-center px-2 py-2">
+          <div className="grid grid-cols-3 gap-3 max-w-xs">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`flex flex-col items-center justify-center py-3 px-4 rounded-xl transition-all duration-300 min-h-[60px] ${
+                  isActive(item.href)
+                    ? "bg-gradient-to-r from-yellow-100 to-orange-100 dark:from-orange-900/40 dark:to-yellow-900/40 text-orange-700 dark:text-orange-400 shadow-md border border-orange-300 dark:border-orange-600"
+                    : "text-orange-600 dark:text-orange-400 hover:bg-orange-50/80 dark:hover:bg-gray-700/50"
+                }`}
+              >
+                <span className="text-2xl mb-1">{item.icon}</span>
+                <span className="text-xs font-medium text-center">{item.name}</span>
+              </Link>
+            ))}
+          </div>
         </div>
       </nav>
 
