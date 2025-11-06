@@ -136,6 +136,14 @@ export default function Dashboard() {
                       <span className="mr-2 text-lg">👤</span> {t("nav.profile")}
                     </Link>
 
+                    <Link
+                      to="/dashboard/about"
+                      className="flex items-center px-4 py-3 text-sm md:text-base text-orange-700 dark:text-orange-400 hover:text-orange-900 dark:hover:text-orange-300 hover:bg-orange-50 dark:hover:bg-gray-700 min-h-[44px]"
+                      onClick={() => setIsDropdownOpen(false)}
+                    >
+                      <span className="mr-2 text-lg">ℹ️</span> {t("about.aboutUs")}
+                    </Link>
+
                     <div className="px-4 py-3 border-t border-b border-orange-100 dark:border-gray-700">
                       <p className="text-xs md:text-sm text-orange-600 dark:text-orange-500 font-medium mb-3">
                         {t("settings.language")}

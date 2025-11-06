@@ -11,6 +11,7 @@ import Login from "./pages/Login"
 import DashboardHome from "./pages/DashboardHome" // ✅ NEW: import DashboardHome
 import "./index.css"
 import Profile from "./pages/Profile"
+import About from "./pages/About" // import About page
 import { LanguageProvider } from "./contexts/LanguageContext"
 import { ThemeProvider } from "./contexts/ThemeContext"
 import { UVDataProvider } from "./contexts/UVDataContext"
@@ -111,6 +112,7 @@ const App = () => {
         <Route path="latest" element={<Latest />} />
         <Route path="history" element={<History />} />
         <Route path="profile" element={<Profile />} />
+        <Route path="about" element={<About />} />
       </Route>
 
       <Route path="*" element={<Navigate to="/" replace />} />
