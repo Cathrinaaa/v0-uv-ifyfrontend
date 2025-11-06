@@ -22,12 +22,14 @@ export default function Login() {
 
   useEffect(() => {
     const savedEmail = getCookie("uvify_email")
+    const savedPassword = getCookie("uvify_password")
     const wasRemembered = getCookie("uvify_remember_me") === "true"
 
-    if (savedEmail) {
+    if (savedEmail && savedPassword) {
       setFormData((prev) => ({
         ...prev,
         email: savedEmail,
+        password: savedPassword,
       }))
       setRememberMe(wasRemembered)
     }
@@ -93,10 +95,11 @@ export default function Login() {
 
       if (rememberMe) {
         setCookie("uvify_email", formData.email, 30)
+        setCookie("uvify_password", formData.password, 30)
         setCookie("uvify_remember_me", "true", 30)
       } else {
-        // Clear cookies if Remember Me is unchecked
         setCookie("uvify_email", "", -1)
+        setCookie("uvify_password", "", -1)
         setCookie("uvify_remember_me", "", -1)
       }
 
@@ -200,7 +203,7 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors duration-200"
                 >
                   {showPassword ? "Hide" : "Show"}
                 </button>
