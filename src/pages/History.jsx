@@ -110,6 +110,17 @@ export default function History() {
     setCurrentPage(Math.max(1, Math.min(page, totalPages)))
   }
 
+  const groupedByDate = () => {
+    const grouped = {}
+    currentPageData.forEach((item) => {
+      if (!grouped[item.date]) {
+        grouped[item.date] = []
+      }
+      grouped[item.date].push(item)
+    })
+    return grouped
+  }
+
   return (
     <div className="p-4 md:p-6">
       <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 text-orange-700 dark:text-orange-400">
@@ -168,57 +179,66 @@ export default function History() {
       </p>
 
       {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md rounded-xl">
-          <thead>
-            <tr className="bg-orange-100 dark:bg-orange-900/30">
-              <th className="py-3 px-4 text-left text-orange-700 dark:text-orange-400">{t("history.date")}</th>
-              <th className="py-3 px-4 text-left text-orange-700 dark:text-orange-400">{t("history.time")}</th>
-              <th className="py-3 px-4 text-left text-orange-700 dark:text-orange-400">{t("history.uvIndex")}</th>
-              <th className="py-3 px-4 text-left text-orange-700 dark:text-orange-400">{t("history.level")}</th>
-            </tr>
-          </thead>
+      <div className="space-y-6">
+        {filteredHistory.length === 0 ? (
+          <div className="py-8 px-4 text-center text-gray-500 bg-white/80 dark:bg-gray-800/80 rounded-xl">
+            No records found for{" "}
+            {activeFilter === "custom" ? new Date(selectedDate).toLocaleDateString() : activeFilter}
+          </div>
+        ) : (
+          Object.entries(groupedByDate()).map(([date, items]) => (
+            <div key={date}>
+              <h3 className="text-lg font-semibold text-orange-700 dark:text-orange-400 mb-3">
+                {new Date(date).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" })}
+              </h3>
 
-          <tbody>
-            {currentPageData.map((item, i) => {
-              const getLevelColor = (level) => {
-                switch (level?.toLowerCase()) {
-                  case "low":
-                    return "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20"
-                  case "moderate":
-                    return "text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20"
-                  case "high":
-                    return "text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20"
-                  case "very high":
-                    return "text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20"
-                  case "extreme":
-                    return "text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/20"
-                  default:
-                    return "text-gray-600 dark:text-gray-400"
-                }
-              }
+              <div className="overflow-x-auto">
+                <table className="w-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-md rounded-xl">
+                  <thead>
+                    <tr className="bg-orange-100 dark:bg-orange-900/30">
+                      <th className="py-3 px-4 text-left text-orange-700 dark:text-orange-400">{t("history.time")}</th>
+                      <th className="py-3 px-4 text-left text-orange-700 dark:text-orange-400">
+                        {t("history.uvIndex")}
+                      </th>
+                      <th className="py-3 px-4 text-left text-orange-700 dark:text-orange-400">{t("history.level")}</th>
+                    </tr>
+                  </thead>
 
-              return (
-                <tr key={i} className="border-b border-orange-200 dark:border-gray-700">
-                  <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{item.date}</td>
-                  <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{item.time}</td>
-                  <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{item.uvi}</td>
-                  <td className={`py-3 px-4 font-semibold rounded-lg ${getLevelColor(item.level)}`}>{item.level}</td>
-                </tr>
-              )
-            })}
+                  <tbody>
+                    {items.map((item, i) => {
+                      const getLevelColor = (level) => {
+                        switch (level?.toLowerCase()) {
+                          case "low":
+                            return "text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20"
+                          case "moderate":
+                            return "text-yellow-600 dark:text-yellow-400 bg-yellow-50 dark:bg-yellow-900/20"
+                          case "high":
+                            return "text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-900/20"
+                          case "very high":
+                            return "text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20"
+                          case "extreme":
+                            return "text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/20"
+                          default:
+                            return "text-gray-600 dark:text-gray-400"
+                        }
+                      }
 
-            {/* Empty state */}
-            {filteredHistory.length === 0 && (
-              <tr>
-                <td colSpan="4" className="py-8 px-4 text-center text-gray-500">
-                  No records found for{" "}
-                  {activeFilter === "custom" ? new Date(selectedDate).toLocaleDateString() : activeFilter}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                      return (
+                        <tr key={i} className="border-b border-orange-200 dark:border-gray-700">
+                          <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{item.time}</td>
+                          <td className="py-3 px-4 text-gray-700 dark:text-gray-300">{item.uvi}</td>
+                          <td className={`py-3 px-4 font-semibold rounded-lg ${getLevelColor(item.level)}`}>
+                            {item.level}
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       {totalPages > 1 && (
