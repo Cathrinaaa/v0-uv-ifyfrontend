@@ -1,25 +1,55 @@
 "use client"
 
-import { useState, useContext } from "react"
+import { useState, useContext, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { AuthContext } from "../main"
 
 export default function Login() {
-  const [isLogin, setIsLogin] = useState(true)
   const [formData, setFormData] = useState({
-    first_name: "",
-    last_name: "",
-    username: "",
     email: "",
     password: "",
   })
   const [error, setError] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const navigate = useNavigate()
   const { login } = useContext(AuthContext)
 
   // 🌐 Change this to your Render backend URL
   const BACKEND_URL = "https://uvify-backend.onrender.com"
+
+  useEffect(() => {
+    const savedEmail = getCookie("uvify_email")
+    const wasRemembered = getCookie("uvify_remember_me") === "true"
+
+    if (savedEmail) {
+      setFormData((prev) => ({
+        ...prev,
+        email: savedEmail,
+      }))
+      setRememberMe(wasRemembered)
+    }
+  }, [])
+
+  const setCookie = (name, value, days = 30) => {
+    const expires = new Date()
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000)
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`
+  }
+
+  const getCookie = (name) => {
+    const nameEQ = name + "="
+    const cookies = document.cookie.split(";")
+    for (let cookie of cookies) {
+      cookie = cookie.trim()
+      if (cookie.indexOf(nameEQ) === 0) {
+        return cookie.substring(nameEQ.length)
+      }
+    }
+    return ""
+  }
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -28,25 +58,20 @@ export default function Login() {
     }))
   }
 
+  const handleRememberMeChange = (e) => {
+    setRememberMe(e.target.checked)
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError("")
+    setIsLoading(true)
 
     console.log("[v0] Login attempt started")
 
     try {
-      const endpoint = isLogin ? "/auth/login" : "/register"
-      const url = `${BACKEND_URL}${endpoint}`
-
-      const body = isLogin
-        ? { email: formData.email, password: formData.password }
-        : {
-            username: formData.username,
-            password: formData.password,
-            email: formData.email,
-            first_name: formData.first_name,
-            last_name: formData.last_name,
-          }
+      const url = `${BACKEND_URL}/auth/login`
+      const body = { email: formData.email, password: formData.password }
 
       console.log("[v0] Sending request to:", url)
 
@@ -62,20 +87,26 @@ export default function Login() {
       if (!res.ok || !data.success) {
         setError(data.message || "Something went wrong")
         console.log("[v0] Login failed:", data.message)
+        setIsLoading(false)
         return
       }
 
-      if (isLogin) {
-        login(data.user)
-        console.log("[v0] Login successful, navigating to dashboard")
-        navigate("/dashboard")
+      if (rememberMe) {
+        setCookie("uvify_email", formData.email, 30)
+        setCookie("uvify_remember_me", "true", 30)
       } else {
-        alert("Signup successful! You can now log in.")
-        setIsLogin(true)
+        // Clear cookies if Remember Me is unchecked
+        setCookie("uvify_email", "", -1)
+        setCookie("uvify_remember_me", "", -1)
       }
+
+      login(data.user)
+      console.log("[v0] Login successful, navigating to dashboard")
+      navigate("/dashboard")
     } catch (err) {
       console.error("[v0] Auth error:", err)
       setError("Server error. Please try again.")
+      setIsLoading(false)
     }
   }
 
@@ -138,53 +169,14 @@ export default function Login() {
         {/* Auth Card */}
         <div className="w-full max-w-md mx-auto">
           <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg border border-yellow-200 dark:border-gray-700 p-8 transition-colors duration-300">
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center mb-2">
-              {isLogin ? "Login to UVify" : "Create an Account"}
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400 text-center mb-6">
-              {isLogin ? "Sign in to your account" : "Sign up to get started"}
-            </p>
-
-           
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 text-center mb-2">Login to UVify</h2>
+            <p className="text-gray-600 dark:text-gray-400 text-center mb-6">Sign in to your account</p>
 
             {error && (
               <div className="mb-4 text-red-600 dark:text-red-400 text-sm font-medium text-center">{error}</div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {!isLogin && (
-                <div className="grid grid-cols-2 gap-4">
-                  <input
-                    type="text"
-                    name="first_name"
-                    placeholder="First Name"
-                    value={formData.first_name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-yellow-400 dark:focus:ring-yellow-500 focus:border-transparent transition-colors duration-200"
-                    required
-                  />
-                  <input
-                    type="text"
-                    name="last_name"
-                    placeholder="Last Name"
-                    value={formData.last_name}
-                    onChange={handleChange}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-yellow-400 dark:focus:ring-yellow-500 focus:border-transparent transition-colors duration-200"
-                    required
-                  />
-                </div>
-              )}
-              {!isLogin && (
-                <input
-                  type="text"
-                  name="username"
-                  placeholder="Username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-yellow-400 dark:focus:ring-yellow-500 focus:border-transparent transition-colors duration-200"
-                  required
-                />
-              )}
               <input
                 type="email"
                 name="email"
@@ -194,33 +186,47 @@ export default function Login() {
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-yellow-400 dark:focus:ring-yellow-500 focus:border-transparent transition-colors duration-200"
                 required
               />
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-yellow-400 dark:focus:ring-yellow-500 focus:border-transparent transition-colors duration-200"
-                required
-              />
+
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-yellow-400 dark:focus:ring-yellow-500 focus:border-transparent transition-colors duration-200"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+                >
+                  {showPassword ? "Hide" : "Show"}
+                </button>
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  checked={rememberMe}
+                  onChange={handleRememberMeChange}
+                  className="w-4 h-4 border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-700 text-yellow-500 cursor-pointer accent-yellow-500"
+                />
+                <label htmlFor="rememberMe" className="ml-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
+                  Remember me
+                </label>
+              </div>
 
               <button
                 type="submit"
-                className="w-full py-2 px-4 bg-gradient-to-r from-yellow-500 to-orange-600 dark:from-yellow-600 dark:to-orange-700 text-white rounded-lg font-medium shadow-md hover:from-yellow-600 hover:to-orange-700 dark:hover:from-yellow-700 dark:hover:to-orange-800 transition-all duration-200"
+                disabled={isLoading}
+                className="w-full py-2 px-4 bg-gradient-to-r from-yellow-500 to-orange-600 dark:from-yellow-600 dark:to-orange-700 text-white rounded-lg font-medium shadow-md hover:from-yellow-600 hover:to-orange-700 dark:hover:from-yellow-700 dark:hover:to-orange-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isLogin ? "Login" : "Sign Up"}
+                {isLoading ? "Logging in..." : "Login"}
               </button>
             </form>
-
-            <p className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
-              {isLogin ? "Don't have an account?" : "Already have an account?"}{" "}
-              <button
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-yellow-600 dark:text-yellow-400 font-medium hover:underline"
-              >
-                {isLogin ? "Sign Up" : "Login"}
-              </button>
-            </p>
           </div>
         </div>
       </div>
