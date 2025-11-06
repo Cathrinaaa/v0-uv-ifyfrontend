@@ -12,7 +12,7 @@ export default function About() {
       roleKey: "about.leadDeveloper",
       description: "Passionate about UV monitoring technology and health innovation",
       descriptionKey: "about.alexDesc",
-      icon: "💻",
+      image: "/professional-male-developer-with-glasses.jpg",
     },
     {
       name: "Maria Santos",
@@ -20,7 +20,7 @@ export default function About() {
       roleKey: "about.designerDeveloper",
       description: "Creating beautiful and intuitive user experiences for health tech",
       descriptionKey: "about.mariaDesc",
-      icon: "🎨",
+      image: "/professional-female-designer-with-creative-backgro.jpg",
     },
     {
       name: "James Chen",
@@ -28,7 +28,7 @@ export default function About() {
       roleKey: "about.backendDeveloper",
       description: "Building robust systems to track and analyze UV radiation data",
       descriptionKey: "about.jamesDesc",
-      icon: "⚙️",
+      image: "/professional-male-developer-with-technology-backgr.jpg",
     },
     {
       name: "Sofia Morales",
@@ -36,7 +36,7 @@ export default function About() {
       roleKey: "about.qaStrategist",
       description: "Ensuring quality and driving the vision of safer sun protection",
       descriptionKey: "about.sofiaDesc",
-      icon: "✅",
+      image: "/professional-female-product-manager-with-strategic.jpg",
     },
   ]
 
@@ -86,19 +86,22 @@ export default function About() {
           {teamMembers.map((member, index) => (
             <div
               key={index}
-              className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-2xl p-8 border border-orange-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:scale-105"
+              className="bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm rounded-2xl overflow-hidden border border-orange-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 hover:scale-105"
             >
-              <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0">
-                  <div className="flex items-center justify-center w-16 h-16 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl text-2xl shadow-lg">
-                    {member.icon}
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-xl font-bold text-orange-800 dark:text-orange-300">{member.name}</h3>
-                  <p className="text-sm font-semibold text-orange-600 dark:text-orange-400">{member.role}</p>
-                  <p className="text-gray-600 dark:text-gray-400 mt-3 text-sm leading-relaxed">{member.description}</p>
-                </div>
+              {/* Team Member Image */}
+              <div className="relative h-64 md:h-72 overflow-hidden bg-gradient-to-b from-yellow-100 to-orange-100 dark:from-orange-900/30 dark:to-yellow-900/30">
+                <img
+                  src={member.image || "/placeholder.svg"}
+                  alt={member.name}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              {/* Team Member Info */}
+              <div className="p-6 md:p-8">
+                <h3 className="text-xl font-bold text-orange-800 dark:text-orange-300">{member.name}</h3>
+                <p className="text-sm font-semibold text-orange-600 dark:text-orange-400 mt-1">{member.role}</p>
+                <p className="text-gray-600 dark:text-gray-400 mt-4 text-sm leading-relaxed">{member.description}</p>
               </div>
             </div>
           ))}
