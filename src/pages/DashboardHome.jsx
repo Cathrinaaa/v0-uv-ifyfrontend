@@ -314,10 +314,6 @@ export default function DashboardHome() {
         </div>
       </div>
 
-      {/* Gemini AI Suggestions section */}
-      <div className="w-full">
-        <GeminiUVSuggestions />
-      </div>
     </div>
   )
 }

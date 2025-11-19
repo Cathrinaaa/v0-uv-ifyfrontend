@@ -294,11 +294,6 @@ export default function Latest() {
       <div className="mt-8 w-full max-w-4xl">
         <UVAccumulationAnalytics />
       </div>
-
-      {/* Gemini AI Suggestions */}
-      <div className="mt-8 w-full max-w-4xl mb-8">
-        <GeminiUVSuggestions />
-      </div>
     </div>
   )
 }
