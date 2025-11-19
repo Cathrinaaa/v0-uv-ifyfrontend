@@ -69,13 +69,13 @@ export default function Login() {
     setError("")
     setIsLoading(true)
 
-    console.log("[v0] Login attempt started")
+    console.log("Login attempt started")
 
     try {
       const url = `${BACKEND_URL}/auth/login`
       const body = { email: formData.email, password: formData.password }
 
-      console.log("[v0] Sending request to:", url)
+      console.log("Sending request to:", url)
 
       const res = await fetch(url, {
         method: "POST",
@@ -84,7 +84,7 @@ export default function Login() {
       })
 
       const data = await res.json()
-      console.log("[v0] Response received:", data)
+      console.log("Response received:", data)
 
       if (!res.ok || !data.success) {
         setError(data.message || "Something went wrong")
@@ -104,10 +104,10 @@ export default function Login() {
       }
 
       login(data.user)
-      console.log("[v0] Login successful, navigating to dashboard")
+      console.log("Login successful, navigating to dashboard")
       navigate("/dashboard")
     } catch (err) {
-      console.error("[v0] Auth error:", err)
+      console.error("Auth error:", err)
       setError("Server error. Please try again.")
       setIsLoading(false)
     }
